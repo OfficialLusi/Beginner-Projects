@@ -1,0 +1,10 @@
+{
+  "httpconfig": {
+    "routes": [
+      {
+        "requestname": "GetWeatherData",
+        "urlname": "https://localhost:7298/api/weather/{0}/{1}"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherWebApi", "WeatherWebApi\WeatherWebApi.csproj", "{83E1E3BA-2EC1-4D0F-832F-846AD56BC611}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherWPFFrontend", "WeatherWPFFrontend\WeatherWPFFrontend.csproj", "{44BD287D-48C3-4092-8F89-267854F71D28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherApiTest", "WeatherApiTest\WeatherApiTest.csproj", "{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LusiUtilsLibrary", "..\..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj", "{B96127D0-3F43-4061-AD17-5B8F72A1784A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83E1E3BA-2EC1-4D0F-832F-846AD56BC611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83E1E3BA-2EC1-4D0F-832F-846AD56BC611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83E1E3BA-2EC1-4D0F-832F-846AD56BC611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83E1E3BA-2EC1-4D0F-832F-846AD56BC611}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44BD287D-48C3-4092-8F89-267854F71D28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44BD287D-48C3-4092-8F89-267854F71D28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44BD287D-48C3-4092-8F89-267854F71D28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44BD287D-48C3-4092-8F89-267854F71D28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

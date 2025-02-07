@@ -1,0 +1,33 @@
+﻿@model IEnumerable<PersonalBlog.Models.Article>
+
+@{
+    ViewData["Title"] = "View Articles";
+    Layout = "~/Views/Home/Admin/Layout/AdminLayout.cshtml";
+}
+
+<h1>Published Articles</h1>
+
+@if(Model is null){
+    <p>No articles published</p>
+}else{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Published At</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Article article in Model)
+            {
+                <tr>
+                    <td>@article.Title</td>
+                    <td>@article.Content</td>
+                    <td>@article.PublishedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td><a asp-action="SeeSingleArticleAdmin" asp-route-id="@article.Id" class="btn btn-primary">View See single article</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

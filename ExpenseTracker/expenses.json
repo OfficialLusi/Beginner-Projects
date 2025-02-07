@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "Amount": 100,
+    "Description": "\"mouse\"",
+    "CreatedAt": "2024-11-19T17:07:38.7041237+01:00",
+    "UpdatedAt": null,
+    "Category": "\"gaming\""
+  },
+  {
+    "Id": 2,
+    "Amount": 150,
+    "Description": "\"keyboard\"",
+    "CreatedAt": "2024-11-19T17:07:55.6554896+01:00",
+    "UpdatedAt": null,
+    "Category": "\"gaming\""
+  },
+  {
+    "Id": 3,
+    "Amount": 120,
+    "Description": "\"monitor\"",
+    "CreatedAt": "2024-11-19T17:08:19.952534+01:00",
+    "UpdatedAt": null,
+    "Category": "\"film\""
+  }
+]

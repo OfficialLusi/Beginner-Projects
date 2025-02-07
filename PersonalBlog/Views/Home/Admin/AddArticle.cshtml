@@ -1,0 +1,26 @@
+﻿@model PersonalBlog.Models.Article
+@*
+    add article page
+*@
+@{
+    ViewData["Title"] = "Add Article";
+    Layout = "~/Views/Home/Admin/Layout/AdminLayout.cshtml";
+}
+
+<div>
+    <h1>Add Article</h1>
+    <form asp-action="AddArticle" method="post">
+        <div>
+            <label for="Title">Insert Article Title:</label>
+            <input type="text" asp-for="Title" class="form-control"/>
+        </div>
+        <div>
+            <label for="Title">Insert Article Content:</label>
+            <textarea asp-for="Content" class="form-control">Write here ... </textarea>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Publish Article</button>
+        </div>
+    </form>
+</div>
+

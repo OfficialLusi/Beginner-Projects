@@ -1,0 +1,20 @@
+﻿@model PersonalBlog.Models.Article
+
+@*
+    single article page
+*@
+@{
+    ViewData["Title"] = "Article";
+    Layout = "~/Views/Home/User/Layout/UserLayout.cshtml";
+}
+
+@if(Model is null){
+    <div>
+        <p>Error, No article found</p>
+    </div>
+}else{
+    <h1>@Model.Title</h1>
+    <p><strong>Published At:</strong> @Model.PublishedAt.ToString("yyyy-MM-dd HH:mm")</p>
+    <p><strong>Content:</strong></p>
+    <p>@Model.Content</p>
+}

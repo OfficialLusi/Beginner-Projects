@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PersonalBlog.Models.Article>
+
+@*
+    User dashboard page
+*@
+@{
+    ViewData["Title"] = "UserDashboard";
+    Layout = "~/Views/Home/User/Layout/UserLayout.cshtml";
+}
+<div>
+    <h1>User Dashboard</h1>
+</div>
+
+@if (Model is null)
+{
+    <div>
+        <p>No articles published</p>
+    </div>
+}
+else
+{
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Published At</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Article article in Model)
+                {
+                    <tr>
+                        <td>@article.Title</td>
+                        <td>@article.PublishedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td><a asp-action="SeeSingleArticle" asp-route-id="@article.Id" class="btn btn-primary">View See single article</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

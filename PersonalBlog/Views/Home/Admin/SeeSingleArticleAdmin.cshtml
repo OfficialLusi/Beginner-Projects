@@ -1,0 +1,26 @@
+﻿@model PersonalBlog.Models.Article
+
+@*
+    See single article admin
+*@
+@{
+    ViewData["Title"] = "See sigle article admin";
+    Layout = "~/Views/Home/Admin/Layout/AdminLayout.cshtml";
+}
+
+@if (Model is null)
+{
+    <div>
+        <p>Error, No article found</p>
+    </div>
+}
+else
+{
+    <h1>@Model.Title</h1>
+    <p><strong>Published At:</strong> @Model.PublishedAt.ToString("yyyy-MM-dd HH:mm")</p>
+    <p><strong>Content:</strong></p>
+    <p>@Model.Content</p>
+    <a asp-action="EditArticle" asp-route-id="@Model.Id" class="btn btn-primary">Edit Article</a>
+    <a asp-action="DeleteArticle" asp-route-id="@Model.Id" class="btn btn-primary">Delete Article</a>
+}
+

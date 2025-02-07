@@ -1,0 +1,35 @@
+﻿@model PersonalBlog.Models.Article
+
+@*
+    Edit article page    
+*@
+@{
+    ViewData["Title"] = "Edit Article";
+    Layout = "~/Views/Home/Admin/Layout/AdminLayout.cshtml";
+}
+
+<div>
+    <h1>Edit Article</h1>
+</div>
+
+@if(Model is null){
+    <h1>no article to edit</h1>
+} else {
+    <div>
+        <form asp-action="EditArticle" method="post">
+            <div>
+                <label for="Title">Edit Article Title:</label>
+                <input type="text" asp-for="Title" class="form-control" />
+            </div>
+            <div>
+                <label for="Title">Edit Article Content:</label>
+                <textarea asp-for="Content" class="form-control">Write here ... </textarea>
+            </div>
+            <div>
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+        </form>
+    </div>
+}
+

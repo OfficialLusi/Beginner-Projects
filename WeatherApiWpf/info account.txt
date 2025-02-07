@@ -1,0 +1,3 @@
+gmail
+WeatherApp2003
+api key: 8XJ8EHEC4L4MXC22ZFHB3BM53
