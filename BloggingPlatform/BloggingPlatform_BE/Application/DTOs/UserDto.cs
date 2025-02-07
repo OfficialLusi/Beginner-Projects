@@ -8,5 +8,5 @@ public class UserDto
     public required string UserSurname { get; set; }
     public required string UserEmail { get; set; }
     public required string UserPassword { get; set; }
-    public required DateTime UserCreatedOn { get; set; }
+    public required DateTime UserCreatedOn { get; set; } // todo verify if from frontend this is a string, if yes, check repository method
 }
