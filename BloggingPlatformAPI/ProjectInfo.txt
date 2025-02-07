@@ -1,0 +1,37 @@
+﻿4 Projects
+
+Backend Project
+	- BloggingPlatform_BE/
+	  ├── Domain/
+	  │   ├── Entities/
+	  │   │   └── User.cs
+	  │   └── Interfaces/
+	  │       └── IUserRepository.cs
+	  │
+	  ├── Application/
+	  │   ├── DTOs/
+	  │   │   └── UserDto.cs
+	  │   └── Services/
+	  │       └── UserService.cs
+	  │
+	  ├── Infrastructure/
+	  │   ├── Data/
+	  │   │   └── UserRepository.cs
+	  │   ├── Database/
+	  │   │   └── SqliteDbContext.cs
+	  │   └── Controllers/
+	  │       └── UserController.cs
+	  │
+	  └── Program.cs
+
+
+Frontend Project
+	- BloggingPlatform_FE
+
+
+Test Project
+	- BloggingPlatform_TEST
+
+
+Utils Library
+	- LusiUtilsLibrary

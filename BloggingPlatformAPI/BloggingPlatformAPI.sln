@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform_BE", "..\BloggingPlatform_BE\BloggingPlatform_BE.csproj", "{6365AAAE-598A-4FA7-9A3F-2D3F33205B23}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Info", "Info", "{C99540E1-C74A-4140-9119-B98B20FF56FA}"
+	ProjectSection(SolutionItems) = preProject
+		..\BloggingPlatform_BE\bozza.png = ..\BloggingPlatform_BE\bozza.png
+		ProjectInfo.txt = ProjectInfo.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform_FE", "..\BloggingPlatform_FE\BloggingPlatform_FE.csproj", "{175FBB6A-15A2-4627-8A59-DC5EA2AEAAB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloggingPlatform_TEST", "..\BloggingPlatform_TEST\BloggingPlatform_TEST.csproj", "{881A71C0-7354-4FFB-B955-3016A2DB464F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LusiUtilsLibrary", "..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj", "{17F02200-9648-4718-85BA-F0477F395711}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6365AAAE-598A-4FA7-9A3F-2D3F33205B23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6365AAAE-598A-4FA7-9A3F-2D3F33205B23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6365AAAE-598A-4FA7-9A3F-2D3F33205B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6365AAAE-598A-4FA7-9A3F-2D3F33205B23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{175FBB6A-15A2-4627-8A59-DC5EA2AEAAB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{175FBB6A-15A2-4627-8A59-DC5EA2AEAAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{175FBB6A-15A2-4627-8A59-DC5EA2AEAAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{175FBB6A-15A2-4627-8A59-DC5EA2AEAAB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{881A71C0-7354-4FFB-B955-3016A2DB464F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{881A71C0-7354-4FFB-B955-3016A2DB464F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{881A71C0-7354-4FFB-B955-3016A2DB464F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{881A71C0-7354-4FFB-B955-3016A2DB464F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17F02200-9648-4718-85BA-F0477F395711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17F02200-9648-4718-85BA-F0477F395711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17F02200-9648-4718-85BA-F0477F395711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17F02200-9648-4718-85BA-F0477F395711}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
