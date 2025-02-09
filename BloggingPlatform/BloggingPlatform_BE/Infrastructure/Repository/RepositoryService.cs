@@ -107,30 +107,52 @@ public class RepositoryService : IRepositoryService
 
             SqliteParameter parameter = new SqliteParameter(":UserId", userId);
 
-            using (SqliteCommand command = connection.CreateCommand()) 
-            { 
-                command.CommandText= query;
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = query;
                 command.Parameters.Add(parameter);
                 command.ExecuteNonQuery();
             }
         }
     }
 
-    #endregion
-
-    #region BlogPost
-
-    public void AddBlogPost(BlogPostDto blogPost, int userId)
+    public UserDto GetAllUsers()
     {
         using (SqliteConnection connection = new SqliteConnection(_connectionString))
         {
             connection.Open();
 
-            string query = "INSERT INTO BlogPosts (UserId, PostGuid, PostTitle, PostContent, PostTags, PostCreatedOn, PostModifiedOn)   " +
-                           "VALUES (:UserId, :PostGuid, :PostTitle, :PostContent, :PostTags, :PostCreatedOn, :PostModifiedOn)           ";
+            UserDto user = null;04
 
-            SqliteParameter[] parameters = new SqliteParameter[]
+            string query = "SELECT * FROM USERS";
+
+            using (SqliteCommand command = connection.CreateCommand())
             {
+                command.CommandText = query;
+                SqliteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+
+
+                }
+
+            }
+        }
+        #endregion
+
+        #region BlogPost
+
+        public void AddBlogPost(BlogPostDto blogPost, int userId)
+        {
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "INSERT INTO BlogPosts (UserId, PostGuid, PostTitle, PostContent, PostTags, PostCreatedOn, PostModifiedOn)   " +
+                               "VALUES (:UserId, :PostGuid, :PostTitle, :PostContent, :PostTags, :PostCreatedOn, :PostModifiedOn)           ";
+
+                SqliteParameter[] parameters = new SqliteParameter[]
+                {
                 new(":UserId", userId),
                 new(":PostGuid", blogPost.PostGuid.ToString()),
                 new(":PostTitle", blogPost.PostTitle),
@@ -138,40 +160,141 @@ public class RepositoryService : IRepositoryService
                 new(":PostTags", blogPost.PostTags),
                 new(":PostCreatedOn", DateTime.UtcNow),
                 new(":PostModifiedOn", DBNull.Value)
-            };
+                };
 
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.AddRange(parameters);
-                command.ExecuteNonQuery();
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.Parameters.AddRange(parameters);
+                    command.ExecuteNonQuery();
+                }
             }
         }
-    }    
-    
-    public void UpdateBlogPost(BlogPostDto blogPost)
-    {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+
+        public void UpdateBlogPost(BlogPostDto blogPost)
         {
-            connection.Open();
-
-            string query = "UPDATE BlogPosts SET                " +
-                           "PostGuid = :PostGuid,               " +
-                           "PostTitle = :PostTitle,             " +
-                           "PostContent = :PostContent,         " +
-                           "PostTags = :PostTags,               " +
-                           "PostModifiedOn = :PostModifiedOn    " +
-                           "WHERE PostId = :PostId              ";
-
-            SqliteParameter[] parameters = new SqliteParameter[]
+            // todo add control on user id on the caller method
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
+                connection.Open();
+
+                string query = "UPDATE BlogPosts SET                " +
+                               "PostGuid = :PostGuid,               " +
+                               "PostTitle = :PostTitle,             " +
+                               "PostContent = :PostContent,         " +
+                               "PostTags = :PostTags,               " +
+                               "PostModifiedOn = :PostModifiedOn    " +
+                               "WHERE PostId = :PostId              ";
+
+                SqliteParameter[] parameters = new SqliteParameter[]
+                {
                 new(":PostId", blogPost.PostId),
                 new(":PostGuid", blogPost.PostGuid.ToString()),
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
                 new(":PostModifiedOn", DateTime.UtcNow)
+                };
+
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.Parameters.AddRange(parameters);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteBlogPost(BlogPostDto blogPost)
+        {
+            // todo add control on user id on the caller method
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+
+                int postId = blogPost.PostId;
+
+                string query = "DELETE FROM BlogPosts   " +
+                               "WHERE PostId = :PostId  ";
+
+                SqliteParameter parameter = new SqliteParameter(":PostId", postId);
+
+                using (SqliteCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.Parameters.Add(parameter);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        #endregion
+
+        #region startup methods
+        public void InitializeTables()
+        {
+            using (SqliteConnection connection = new SqliteConnection())
+            {
+                connection.Open();
+                CreateUserTable(connection);
+                CreateBlogPostTable(connection);
+                CreateAdminUser(connection);
+            }
+        }
+
+        private void CreateUserTable(SqliteConnection connection)
+        {
+            string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.Users (  " +
+                            "UserId INT PRIMARY KEY,                         " +
+                            "UserGuid STRING NOT NULL,                       " +
+                            "UserName STRING NOT NULL                        " +
+                            "UserSurname STRING NOT NULL                     " +
+                            "UserEmail STRING NOT NULL                       " +
+                            "UserPassword STRING NOT NULL                    " +
+                            "UserCreatedOn STRING NOT NULL                   " +
+                            ")                                               ";
+
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void CreateBlogPostTable(SqliteConnection connection)
+        {
+
+            string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.BlogPosts ( " +
+                            "PostId INT PRIMARY KEY,                            " +
+                            "UserId INT FOREIGN KEY,                            " +
+                            "PostGuid STRING NOT NULL                           " +
+                            "PostTitle STRING NOT NULL                          " +
+                            "PostContent STRING NOT NULL                        " +
+                            "PostCreatedOn STRING NOT NULL                      " +
+                            "PostModifiedOn STRING NULL                         " +
+                            ")                                                  ";
+
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private void CreateAdminUser(SqliteConnection connection)
+        {
+            string query = "INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) " +
+                           "VALUES (:UserGuid, :UserName, :UserSurname, :UserEmail, :UserPassword, :UserCreatedOn)      ";
+
+            SqliteParameter[] parameters = new SqliteParameter[]
+            {
+            new(":UserGuid", Guid.NewGuid().ToString()),
+            new(":UserName", "admin"),
+            new(":UserSurname", "admin"),
+            new(":UserEmail", "admin@admin.admin"),
+            new(":UserPassword", "admin"),
+            new(":UserCreatedOn", DateTime.UtcNow.ToString()),
             };
 
             using (SqliteCommand command = connection.CreateCommand())
@@ -181,119 +304,18 @@ public class RepositoryService : IRepositoryService
                 command.ExecuteNonQuery();
             }
         }
-    }    
-    
-    public void DeleteBlogPost(BlogPostDto blogPost)
-    {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        #endregion
+
+
+        #region helper
+        private void InitialCheck(object variable, string message)
         {
-            connection.Open();
-
-            int postId = blogPost.PostId;
-
-            string query = "DELETE FROM BlogPosts   " +
-                           "WHERE PostId = :PostId  ";
-
-            SqliteParameter parameter = new SqliteParameter(":PostId", postId);
-
-            using (SqliteCommand command = connection.CreateCommand())
+            if (variable is null)
             {
-                command.CommandText = query;
-                command.Parameters.Add(parameter);
-                command.ExecuteNonQuery();
+                Exception? _ = null;
+                throw new ArgumentNullException(message, _);
             }
         }
+        #endregion
+
     }
-
-
-    #endregion
-
-    #region startup methods
-    public void InitializeTables()
-    {
-        using (SqliteConnection connection = new SqliteConnection())
-        {
-            connection.Open();
-            CreateUserTable(connection);
-            CreateBlogPostTable(connection);
-            CreateAdminUser(connection);
-        }
-    }
-
-    private void CreateUserTable(SqliteConnection connection)
-    {
-        string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.Users (  " +
-                        "UserId INT PRIMARY KEY,                         " +
-                        "UserGuid STRING NOT NULL,                       " +
-                        "UserName STRING NOT NULL                        " +
-                        "UserSurname STRING NOT NULL                     " +
-                        "UserEmail STRING NOT NULL                       " +
-                        "UserPassword STRING NOT NULL                    " +
-                        "UserCreatedOn STRING NOT NULL                   " +
-                        ")                                               ";
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.ExecuteNonQuery();
-        }
-    }
-
-    private void CreateBlogPostTable(SqliteConnection connection)
-    {
-
-        string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.BlogPosts ( " +
-                        "PostId INT PRIMARY KEY,                            " +
-                        "UserId INT FOREIGN KEY,                            " +
-                        "PostGuid STRING NOT NULL                           " +
-                        "PostTitle STRING NOT NULL                          " +
-                        "PostContent STRING NOT NULL                        " +
-                        "PostCreatedOn STRING NOT NULL                      " +
-                        "PostModifiedOn STRING NULL                         " +
-                        ")                                                  ";
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.ExecuteNonQuery();
-        }
-    }
-
-    private void CreateAdminUser(SqliteConnection connection)
-    {
-        string query = "INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) " +
-                       "VALUES (:UserGuid, :UserName, :UserSurname, :UserEmail, :UserPassword, :UserCreatedOn)      ";
-
-        SqliteParameter[] parameters = new SqliteParameter[]
-        {
-            new(":UserGuid", Guid.NewGuid().ToString()),
-            new(":UserName", "admin"),
-            new(":UserSurname", "admin"),
-            new(":UserEmail", "admin@admin.admin"),
-            new(":UserPassword", "admin"),
-            new(":UserCreatedOn", DateTime.UtcNow.ToString()),
-        };
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.Parameters.AddRange(parameters);
-            command.ExecuteNonQuery();
-        }
-    }
-    #endregion
-
-
-    #region helper
-    private void InitialCheck(object variable, string message)
-    {
-        if (variable is null)
-        {
-            Exception? _ = null;
-            throw new ArgumentNullException(message, _);
-        }
-    }
-    #endregion
-
-}
