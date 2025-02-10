@@ -3,7 +3,7 @@ using Microsoft.Data.Sqlite;
 
 namespace BloggingPlatform_BE.Application.Services;
 
-public class ApplicationService
+public class ApplicationService : IApplicationService
 {
     private string _filePath;
     private IRepositoryService _repositoryService;
