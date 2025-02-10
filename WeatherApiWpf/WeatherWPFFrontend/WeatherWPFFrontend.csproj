@@ -18,10 +18,10 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj" />
-    <ProjectReference Include="..\WeatherApiTest\WeatherApiTest.csproj" />
-    <ProjectReference Include="..\WeatherWebApi\WeatherWebApi.csproj" />
+  <ItemGroup>	
+	<ProjectReference Include="..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj" />
+	<ProjectReference Include="..\WeatherApiTest\WeatherApiTest.csproj" />
+	<ProjectReference Include="..\WeatherWebApi\WeatherWebApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherWPFFrontend", "Weath
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeatherApiTest", "WeatherApiTest\WeatherApiTest.csproj", "{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LusiUtilsLibrary", "..\..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj", "{B96127D0-3F43-4061-AD17-5B8F72A1784A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LusiUtilsLibrary", "..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj", "{32009C65-74D6-47D6-9E76-CC3827AA77A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E896DECF-0B7A-4BB3-983D-FBA3D9052CF9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B96127D0-3F43-4061-AD17-5B8F72A1784A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32009C65-74D6-47D6-9E76-CC3827AA77A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32009C65-74D6-47D6-9E76-CC3827AA77A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32009C65-74D6-47D6-9E76-CC3827AA77A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32009C65-74D6-47D6-9E76-CC3827AA77A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
