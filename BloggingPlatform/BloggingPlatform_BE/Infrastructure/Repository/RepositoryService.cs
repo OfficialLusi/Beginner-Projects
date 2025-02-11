@@ -1,7 +1,9 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
 using Microsoft.Data.Sqlite;
-using System.IO.Pipelines;
+using System.Diagnostics;
+using System.Data.SQLite;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BloggingPlatform_BE.Infrastructure.Repository;
 
@@ -15,8 +17,8 @@ namespace BloggingPlatform_BE.Infrastructure.Repository;
 
 public class RepositoryService : IRepositoryService
 {
-    private string _dbName; // BloggingPlatform_SQLite_DB
-    private string _connectionString;
+    private readonly string _dbName; // BloggingPlatform_SQLite_DB
+    private readonly string _connectionString; // only the path to the db
     private readonly ILogger<IRepositoryService> _logger;
 
     public RepositoryService(string connectionString, string dbName, ILogger<IRepositoryService> logger)
@@ -24,57 +26,24 @@ public class RepositoryService : IRepositoryService
         #region InitialChecks
         InitialCheck(connectionString, "ConnectionString cannot be null");
         InitialCheck(dbName, "Database name cannot be null");
+        InitialCheck(logger, "Logger cannot be null");
         #endregion
 
-        _dbName = dbName;
         _connectionString = connectionString;
+        _dbName = dbName;
         _logger = logger;
     }
 
     #region User
     public void AddUser(UserDto user)
     {
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        try
         {
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             string query = "INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) " +
                            "VALUES (:UserGuid, :UserName, :UserSurname, :UserEmail, :UserPassword, :UserCreatedOn)      ";
-
-            SqliteParameter[] parameters = new SqliteParameter[]
-            {
-            new(":UserGuid", user.UserGuid.ToString()),
-            new(":UserName", user.UserName),
-            new(":UserSurname", user.UserSurname),
-            new(":UserEmail", user.UserEmail),
-            new(":UserPassword", user.UserPassword),
-            new(":UserCreatedOn", user.UserCreatedOn),
-            };
-
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.AddRange(parameters);
-                command.ExecuteNonQuery();
-            }
-        }
-    }
-
-    public void UpdateUser(UserDto user)
-    {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
-        {
-            connection.Open();
-
-            string query = "UPDATE Users SET                " +
-                           "UserGuid = :UserGuid,           " +
-                           "UserName = :UserName,           " +
-                           "UserSurname = :UserSurname,     " +
-                           "UserEmail = :UserEmail,         " +
-                           "UserPassword = :UserPassword,   " +
-                           "UserCreatedOn = :UserCreatedOn  " +
-                           "WHERE UserId = :UserId          ";
 
             SqliteParameter[] parameters = new SqliteParameter[]
             {
@@ -83,82 +52,126 @@ public class RepositoryService : IRepositoryService
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
                 new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn),
-                new(":UserId", user.UserId)
+                new(":UserCreatedOn", user.UserCreatedOn)
             };
 
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.AddRange(parameters);
-                command.ExecuteNonQuery();
-            }
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddRange(parameters);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly added a new user with guid <{userGuid}>to the db.", user.UserGuid);
         }
-    }
-
-    public void DeleteUser(int userId)
-    {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        catch (Exception ex)
         {
-            connection.Open();
-
-            string query = "DELETE FROM Users       " +
-                           "WHERE UserId = :UserId  ";
-
-            SqliteParameter parameter = new SqliteParameter(":UserId", userId);
-
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.Add(parameter);
-                command.ExecuteNonQuery();
-            }
+            throw new Exception($"Repository Service - Error during adding user with guid <{user.UserGuid}> to db", ex);
         }
     }
 
-    public UserDto GetUserById(int userId)
+    public void UpdateUser(UserDto user)
     {
         try
         {
-            UserDto user = null;
+            // todo add control on user id on the caller method
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            string query = "UPDATE Users SET                " +
+                           "UserName = :UserName,           " +
+                           "UserSurname = :UserSurname,     " +
+                           "UserEmail = :UserEmail,         " +
+                           "UserPassword = :UserPassword,   " +
+                           "UserCreatedOn = :UserCreatedOn  " +
+                           "WHERE UserGuid = :UserGuid      ";
+
+            SqliteParameter[] parameters = new SqliteParameter[]
+            {
+                new(":UserName", user.UserName),
+                new(":UserSurname", user.UserSurname),
+                new(":UserEmail", user.UserEmail),
+                new(":UserPassword", user.UserPassword),
+                new(":UserCreatedOn", user.UserCreatedOn),
+                new(":UserGuid", user.UserGuid.ToString())
+            };
+
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddRange(parameters);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly updated user with guid <{userGuid}>", user.UserGuid);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during updating user with guid <{user.UserGuid}>", ex);
+        }
+    }
+
+    public void DeleteUser(Guid userGuid)
+    {
+        try
+        {
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            string query = "DELETE FROM Users           " +
+                           "WHERE UserGuid = :UserGuid  ";
+
+            SqliteParameter parameter = new SqliteParameter(":UserGuid", userGuid);
+
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.Add(parameter);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly deleted user with user guid <{userGuid}>", userGuid);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during deleting user with guid <{userGuid}> to db", ex);
+        }
+    }
+
+    public UserDto GetUserByGuid(Guid userGuid)
+    {
+        try
+        {
+            UserDto user = new UserDto();
 
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
 
-                string query = "SELECT * FROM USERS     " +
-                               "WHERE UserId = :UserId  ";
+                string query = "SELECT * FROM USERS         " +
+                               "WHERE UserGuid = :UserGuid  ";
 
-                SqliteParameter parameter = new SqliteParameter("userId", userId);
-                using (SqliteCommand command = connection.CreateCommand())
+                SqliteParameter parameter = new SqliteParameter(":UserGuid", userGuid);
+
+                using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                command.Parameters.Add(parameter);
+                SqliteDataReader reader = command.ExecuteReader();
+                if (reader.Read())
                 {
-                    command.CommandText = query;
-                    command.Parameters.Add(parameter);
-                    SqliteDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        user.UserId = userId;
-                        user.UserGuid = reader.GetGuid(1);
-                        user.UserName = reader.GetString(2);    
-                        user.UserSurname= reader.GetString(3);    
-                        user.UserEmail = reader.GetString(4);    
-                        user.UserPassword = reader.GetString(5);    
-                        user.UserCreatedOn = Convert.ToDateTime(reader.GetString(6));    
-                    }
+                    user.UserId = Convert.ToInt32(reader["UserId"]);
+                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]));
+                    user.UserName = Convert.ToString(reader["UserName"]);
+                    user.UserSurname = Convert.ToString(reader["UserSurname"]);
+                    user.UserEmail = Convert.ToString(reader["UserEmail"]);
+                    user.UserPassword = Convert.ToString(reader["UserPassword"]);
+                    user.UserCreatedOn = Convert.ToDateTime(reader["UserCreatedOn"]);
                 }
             }
 
             if (user != null)
+            {
+                _logger.LogInformation("Repository Service - Correctly returned user with guid <{userGuid}>", userGuid);
                 return user;
+            }
 
-            _logger.LogInformation($"No user found with id {userId}.");
+            _logger.LogInformation("Repository Service - No user found with guid <{userGuid}>", userGuid);
             return null;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Error during retrieving user {userId} from db. {ex.Message}");
-            return null;
+            throw new Exception($"Repository Service - Error during retrieving user with guid <{userGuid}> from db", ex);
         }
     }
 
@@ -167,7 +180,6 @@ public class RepositoryService : IRepositoryService
         try
         {
             List<UserDto> users = new List<UserDto>();
-            UserDto user = null;
 
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
@@ -175,44 +187,50 @@ public class RepositoryService : IRepositoryService
 
                 string query = "SELECT * FROM USERS";
 
-                using (SqliteCommand command = connection.CreateCommand())
+                using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                SqliteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    command.CommandText = query;
-                    SqliteDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        user.UserId = reader.GetInt32(0);
-                        user.UserGuid = reader.GetGuid(1);
-                        user.UserName = reader.GetString(2);
-                        user.UserSurname = reader.GetString(3);
-                        user.UserEmail = reader.GetString(4);
-                        user.UserPassword = reader.GetString(5);
-                        user.UserCreatedOn = Convert.ToDateTime(reader.GetString(6));
-                    }
+                    UserDto user = new UserDto();
+                    user.UserId = Convert.ToInt32(reader["UserId"]);
+                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]));
+                    user.UserName = Convert.ToString(reader["UserName"]);
+                    user.UserSurname = Convert.ToString(reader["UserSurname"]);
+                    user.UserEmail = Convert.ToString(reader["UserEmail"]);
+                    user.UserPassword = Convert.ToString(reader["UserPassword"]);
+                    user.UserCreatedOn = Convert.ToDateTime(reader["UserCreatedOn"]);
+
+                    users.Add(user);
                 }
             }
-            
-            if(users.Count > 0)
-                return users;
 
-            _logger.LogInformation($"No users found with in database.");
-            return null;
+            if (users.Count > 0)
+            {
+                _logger.LogInformation("Repository Service - Correctly returned all users");
+                return users;
+            }
+
+            _logger.LogInformation($"Repository Service - No users found with in database.");
+            return [];
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            _logger.LogError($"Error during retrieving all users from db. {ex.Message}");
-            return null;
+            throw new Exception("Repository Service - Error during retrieving all users from db.", ex);
         }
     }
     #endregion
 
     #region BlogPost
 
-    public void AddBlogPost(BlogPostDto blogPost, int userId)
+    public void AddBlogPost(BlogPostDto blogPost)
     {
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        try
         {
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
+
+            int userId = blogPost.UserId;
 
             string query = "INSERT INTO BlogPosts (UserId, PostGuid, PostTitle, PostContent, PostTags, PostCreatedOn, PostModifiedOn)   " +
                            "VALUES (:UserId, :PostGuid, :PostTitle, :PostContent, :PostTags, :PostCreatedOn, :PostModifiedOn)           ";
@@ -224,131 +242,234 @@ public class RepositoryService : IRepositoryService
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostCreatedOn", DateTime.UtcNow),
+                new(":PostCreatedOn", blogPost.PostCreatedOn),
                 new(":PostModifiedOn", DBNull.Value)
             };
 
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.AddRange(parameters);
-                command.ExecuteNonQuery();
-            }
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddRange(parameters);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly added a new blog post with guid <{blogPostGuid}>", blogPost.PostGuid);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during adding blog post with guid <{blogPost.PostGuid}>", ex);
         }
     }
 
     public void UpdateBlogPost(BlogPostDto blogPost)
     {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        try
         {
+            // todo add control on user id on the caller method
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
 
             string query = "UPDATE BlogPosts SET                " +
-                           "PostGuid = :PostGuid,               " +
                            "PostTitle = :PostTitle,             " +
                            "PostContent = :PostContent,         " +
                            "PostTags = :PostTags,               " +
                            "PostModifiedOn = :PostModifiedOn    " +
-                           "WHERE PostId = :PostId              ";
+                           "WHERE PostGuid = :PostGuid          ";
 
             SqliteParameter[] parameters = new SqliteParameter[]
-            {
-                new(":PostId", blogPost.PostId),
-                new(":PostGuid", blogPost.PostGuid.ToString()),
+            {                
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostModifiedOn", DateTime.UtcNow)
+                new(":PostModifiedOn", DateTime.UtcNow),
+                new(":PostGuid", blogPost.PostGuid.ToString())
             };
 
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.AddRange(parameters);
-                command.ExecuteNonQuery();
-            }
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.AddRange(parameters);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly updated blog post with guid <{blogPostGuid}>", blogPost.PostGuid);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during updating blog post wit guid <{blogPost.PostGuid}> to db", ex);
         }
     }
 
-    public void DeleteBlogPost(int blogPostId)
+    public void DeleteBlogPost(Guid blogPostGuid)
     {
-        // todo add control on user id on the caller method
-        using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        try
         {
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+
             connection.Open();
 
-            string query = "DELETE FROM BlogPosts   " +
-                           "WHERE PostId = :PostId  ";
+            string query = "DELETE FROM BlogPosts       " +
+                           "WHERE PostGuid = :PostGuid  ";
 
-            SqliteParameter parameter = new SqliteParameter(":PostId", blogPostId);
+            SqliteParameter parameter = new SqliteParameter(":PostGuid", blogPostGuid);
 
-            using (SqliteCommand command = connection.CreateCommand())
-            {
-                command.CommandText = query;
-                command.Parameters.Add(parameter);
-                command.ExecuteNonQuery();
-            }
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.Add(parameter);
+            command.ExecuteNonQuery();
+            _logger.LogInformation("Repository Service - Correctly deleted blog post with guid <{blogPostGuid}>", blogPostGuid);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during deleting blog post with guid <{blogPostGuid}> to db", ex);
         }
     }
 
-    public BlogPostDto GetBlogPostById(int blogPostId)
+    public BlogPostDto GetBlogPostByGuid(Guid blogPostGuid)
     {
+        // todo add json handling for post tags:
+        /* something like:
+         * {
+         *     tag1 : "tag1",
+         *     tag2 : "tag2"
+         * }
+         */
+        try
+        {
+            BlogPostDto blogPost = new BlogPostDto();
 
+            using SqliteConnection connection = new SqliteConnection(_connectionString);
+
+            connection.Open();
+
+            string query = "SELECT * FROM BlogPosts " +
+                           "WHERE PostGuid = :PostGuid  ";
+
+            SqliteParameter parameter = new SqliteParameter(":PostGuid", blogPostGuid);
+
+            using SqliteCommand command = connection.CreateCommand();
+            command.CommandText = query;
+            command.Parameters.Add(parameter);
+
+            SqliteDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                blogPost.PostId = Convert.ToInt32(reader["PostId"]);
+                blogPost.UserId = Convert.ToInt32(reader["UserId"]);
+                blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]));
+                blogPost.PostTitle = Convert.ToString(reader["PostTitle"]);
+                blogPost.PostContent = Convert.ToString(reader["PostContent"]);
+                blogPost.PostTags = Convert.ToString(reader["PostTags"]);
+                blogPost.PostCreatedOn = Convert.ToDateTime(reader["PostCreatedOn"]);
+                blogPost.PostModifiedOn = Convert.ToDateTime(reader["PostModifiedOn"]);
+            }
+
+            if (blogPost != null)
+            {
+                _logger.LogInformation("Repository Service - Correctly returned blog post with guid <{blogPostGuid}>", blogPostGuid);
+                return blogPost;
+            }
+
+            _logger.LogInformation("Repository Service - No blog post found with guid <{blogPostGuid}>", blogPostGuid);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during retrieving blog post with guid <{blogPostGuid}> from db", ex);
+        }
+    }
+
+    public List<BlogPostDto> GetAllBlogPosts()
+    {
+        try
+        {
+            List<BlogPostDto> blogPosts = new List<BlogPostDto>();
+
+            using (SqliteConnection connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+
+                string query = "SELECT * FROM BlogPosts";
+
+                using SqliteCommand command = connection.CreateCommand();
+                command.CommandText = query;
+                SqliteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    BlogPostDto blogPost = new BlogPostDto();
+                    blogPost.PostId = Convert.ToInt32(reader["PostId"]);
+                    blogPost.UserId = Convert.ToInt32(reader["UserId"]);
+                    blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]));
+                    blogPost.PostTitle = Convert.ToString(reader["PostTitle"]);
+                    blogPost.PostContent = Convert.ToString(reader["PostContent"]);
+                    blogPost.PostTags = Convert.ToString(reader["PostTags"]);
+                    blogPost.PostCreatedOn = Convert.ToDateTime(reader["PostCreatedOn"]);
+                    blogPost.PostModifiedOn = Convert.ToDateTime(reader["PostModifiedOn"]);
+
+                    blogPosts.Add(blogPost);
+                }
+            }
+
+            if (blogPosts.Count > 0)
+            {
+                _logger.LogInformation("Repository Service - Correctly returned all blog posts");
+                return blogPosts;
+            }
+
+            _logger.LogInformation($"Repository Service - No blog posts found with in database.");
+            return [];
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Repository Service - Error during retrieving all posts from db", ex);
+        }
     }
 
 
     #endregion
 
     #region startup methods
-    public void InitializeTables()
+    public void InitializeTables(string directory, string filePath)
     {
-        using (SqliteConnection connection = new SqliteConnection())
-        {
-            connection.Open();
-            CreateUserTable(connection);
-            CreateBlogPostTable(connection);
-            CreateAdminUser(connection);
-        }
+        //using (SqliteConnection connection = new SqliteConnection(_connectionString))
+        //{
+        //    connection.Open();
+        //    CreateUserTable(connection);
+        //    CreateBlogPostTable(connection);
+        //    CreateAdminUser(connection);
+        //}ù
+        CreateDatabase(directory, filePath);
     }
 
     private void CreateUserTable(SqliteConnection connection)
     {
-        string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.Users (  " +
-                        "UserId INT PRIMARY KEY,                         " +
-                        "UserGuid STRING NOT NULL,                       " +
-                        "UserName STRING NOT NULL                        " +
-                        "UserSurname STRING NOT NULL                     " +
-                        "UserEmail STRING NOT NULL                       " +
-                        "UserPassword STRING NOT NULL                    " +
-                        "UserCreatedOn STRING NOT NULL                   " +
-                        ")                                               ";
+        string query = "CREATE TABLE IF NOT EXISTS Users ( " +
+                       "UserId INT PRIMARY KEY,             " +
+                       "UserGuid TEXT NOT NULL,             " +
+                       "UserName TEXT NOT NULL,             " +
+                       "UserSurname TEXT NOT NULL,          " +
+                       "UserEmail TEXT NOT NULL,            " +
+                       "UserPassword TEXT NOT NULL,         " +
+                       "UserCreatedOn TEXT NOT NULL         " +
+                       ")                                   ";
 
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.ExecuteNonQuery();
-        }
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = query;
+        command.ExecuteNonQuery();
+        _logger.LogInformation("Repository Service - Correctly created Users table to db : {dbName}", _dbName);
     }
 
     private void CreateBlogPostTable(SqliteConnection connection)
     {
+        string query = "CREATE TABLE IF NOT EXISTS BlogPosts (         " +
+                       "PostId INT PRIMARY KEY,                         " +
+                       "UserId INT,                                     " +
+                       "PostGuid TEXT NOT NULL,                         " +
+                       "PostTitle TEXT NOT NULL,                        " +
+                       "PostContent TEXT NOT NULL,                      " +
+                       "PostCreatedOn TEXT NOT NULL,                    " +
+                       "PostModifiedOn TEXT NULL,                       " +
+                       "FOREIGN KEY (UserId) REFERENCES Users(UserId)   " +
+                       ")                                               ";
 
-        string query = $"CREATE TABLE [IF NOT EXISTS] {_dbName}.BlogPosts ( " +
-                        "PostId INT PRIMARY KEY,                            " +
-                        "UserId INT FOREIGN KEY,                            " +
-                        "PostGuid STRING NOT NULL                           " +
-                        "PostTitle STRING NOT NULL                          " +
-                        "PostContent STRING NOT NULL                        " +
-                        "PostCreatedOn STRING NOT NULL                      " +
-                        "PostModifiedOn STRING NULL                         " +
-                        ")                                                  ";
-
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.ExecuteNonQuery();
-        }
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = query;
+        command.ExecuteNonQuery();
+        _logger.LogInformation("Repository Service - Correctly created BlogPosts table to db : {dbName}", _dbName);
     }
 
     private void CreateAdminUser(SqliteConnection connection)
@@ -366,12 +487,32 @@ public class RepositoryService : IRepositoryService
             new(":UserCreatedOn", DateTime.UtcNow.ToString()),
         };
 
-        using (SqliteCommand command = connection.CreateCommand())
-        {
-            command.CommandText = query;
-            command.Parameters.AddRange(parameters);
-            command.ExecuteNonQuery();
-        }
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = query;
+        command.Parameters.AddRange(parameters);
+        command.ExecuteNonQuery();
+
+        _logger.LogInformation("Repository Service - Correctly added admin user to Users table");
+    }
+
+    private void CreateDatabase(string directory, string filePath)
+    {
+        string directoryPath = Path.GetDirectoryName(filePath);
+
+        if (!File.Exists(filePath))
+            SQLiteConnection.CreateFile(filePath);
+
+        string createSqlPath = Path.Combine(directory, "BloggingPlatform.sql");
+        string creationQuery = File.ReadAllText(createSqlPath);
+
+        using SqliteConnection connection = new SqliteConnection(_connectionString);
+
+        connection.Open();
+
+        using SqliteCommand command = connection.CreateCommand();
+
+        command.CommandText = creationQuery;
+        command.ExecuteNonQuery();
     }
     #endregion
 
@@ -381,8 +522,7 @@ public class RepositoryService : IRepositoryService
     {
         if (variable is null)
         {
-            Exception? _ = null;
-            throw new ArgumentNullException(message, _);
+            ArgumentNullException.ThrowIfNull(variable, message);
         }
     }
     #endregion

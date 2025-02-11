@@ -2,11 +2,11 @@
 
 public class UserDto
 {
-    public required int UserId { get; set; } // primary key
-    public required Guid UserGuid { get; set; }
-    public required string UserName { get; set; }
-    public required string UserSurname { get; set; }
-    public required string UserEmail { get; set; }
-    public required string UserPassword { get; set; }
-    public required DateTime UserCreatedOn { get; set; } // todo verify if from frontend this is a string, if yes, check repository method
+    public int UserId { get; set; } // primary key
+    public Guid UserGuid { get; set; }
+    public string UserName { get; set; }
+    public string UserSurname { get; set; }
+    public string UserEmail { get; set; }
+    public string UserPassword { get; set; }
+    public DateTime UserCreatedOn { get; set; } // todo verify if from frontend this is a string, if yes, check repository method
 }

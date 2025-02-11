@@ -1,0 +1,25 @@
+CREATE TABLE Users ( 
+	UserId			INT PRIMARY KEY	,             
+	UserGuid		TEXT NOT NULL	,             
+	UserName		TEXT NOT NULL	,             
+	UserSurname		TEXT NOT NULL	,          
+	UserEmail		TEXT NOT NULL	,            
+	UserPassword	TEXT NOT NULL	,         
+	UserCreatedOn	TEXT NOT NULL         
+	);                                  
+
+
+CREATE TABLE BlogPosts ( 
+   PostId							INTEGER PRIMARY KEY	,                
+   UserId							INTEGER				,                            
+   PostGuid							TEXT NOT NULL		,                
+   PostTitle						TEXT NOT NULL		,               
+   PostContent						TEXT NOT NULL		,             
+   PostCreatedOn					TEXT NOT NULL		,           
+   PostModifiedOn					TEXT NULL			,    
+   FOREIGN KEY (UserId) REFERENCES Users(UserId) 
+   );
+
+
+INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) 
+VALUES ('366166CC-37D8-4669-9057-4068DF6D4BC8', 'admin', 'admin', 'admin@admin.admin', 'admin', '2025-01-01T00:00:00Z');
