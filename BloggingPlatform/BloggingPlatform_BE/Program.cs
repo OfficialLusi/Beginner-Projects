@@ -40,7 +40,7 @@ internal class Program
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
             ILogger<ApplicationService> appLogger = provider.GetRequiredService<ILogger<ApplicationService>>();
 
-            return new ApplicationService(dbPath, connectionString, repositoryService, baseDir, appLogger);
+            return new ApplicationService(dbPath, repositoryService, baseDir, appLogger);
         });
 
 

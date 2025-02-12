@@ -6,15 +6,13 @@ namespace BloggingPlatform_BE.Application.Services;
 public class ApplicationService : IApplicationService
 {
     private readonly string _filePath;
-    private readonly string _connectionString;
     private readonly string _directory;
     private readonly IRepositoryService _repositoryService;
     private readonly ILogger<ApplicationService> _logger;
 
-    public ApplicationService(string filePath, string connectionString, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger)
+    public ApplicationService(string filePath, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger)
     {
         _filePath = filePath;
-        _connectionString = connectionString;
         _repositoryService = repositoryService;
         _directory = directory;
         _logger = logger;

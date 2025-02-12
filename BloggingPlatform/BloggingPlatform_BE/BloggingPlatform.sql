@@ -15,6 +15,7 @@ CREATE TABLE BlogPosts (
    PostGuid							TEXT NOT NULL						,                
    PostTitle						TEXT NOT NULL						,               
    PostContent						TEXT NOT NULL						,             
+   PostTags							TEXT NOT NULL						,             
    PostCreatedOn					TEXT NOT NULL						,           
    PostModifiedOn					TEXT NULL							,    
    FOREIGN KEY (UserId) REFERENCES Users(UserId) 

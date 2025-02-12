@@ -11,8 +11,10 @@ namespace BloggingPlatform_BE.Infrastructure.Repository;
 /* tips:
  * For create the tables at the startup, it's better to get the connection from an InitializeTables method
  * and using the same instance of the connection (to avoid creating a connection for each table)
- 
+ *
  * For the CRUD operations, it's better to create a connection for each query that need to be execute
+ * 
+ * For saving the guid, its better to use ToUpperInvariant, because = operator of sqlite is case sensitive
  */
 
 public class RepositoryService : IRepositoryService
@@ -47,12 +49,12 @@ public class RepositoryService : IRepositoryService
 
             SqliteParameter[] parameters = new SqliteParameter[]
             {
-                new(":UserGuid", Convert.ToString(user.UserGuid)),
+                new(":UserGuid", user.UserGuid.ToString().ToUpperInvariant()),
                 new(":UserName", user.UserName),
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
                 new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddThh:mm:ssZ"))
+                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ"))
             };
 
             using SqliteCommand command = connection.CreateCommand();
@@ -89,8 +91,8 @@ public class RepositoryService : IRepositoryService
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
                 new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn.ToString()),
-                new(":UserGuid", user.UserGuid.ToString())
+                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                new(":UserGuid", user.UserGuid.ToString().ToUpperInvariant())
             };
 
             using SqliteCommand command = connection.CreateCommand();
@@ -151,7 +153,7 @@ public class RepositoryService : IRepositoryService
                 if (reader.Read())
                 {
                     user.UserId = Convert.ToInt32(reader["UserId"]);
-                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]));
+                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]).ToUpperInvariant());
                     user.UserName = Convert.ToString(reader["UserName"]);
                     user.UserSurname = Convert.ToString(reader["UserSurname"]);
                     user.UserEmail = Convert.ToString(reader["UserEmail"]);
@@ -194,7 +196,7 @@ public class RepositoryService : IRepositoryService
                 {
                     UserDto user = new UserDto();
                     user.UserId = Convert.ToInt32(reader["UserId"]);
-                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]));
+                    user.UserGuid = Guid.Parse(Convert.ToString(reader["UserGuid"]).ToUpperInvariant());
                     user.UserName = Convert.ToString(reader["UserName"]);
                     user.UserSurname = Convert.ToString(reader["UserSurname"]);
                     user.UserEmail = Convert.ToString(reader["UserEmail"]);
@@ -238,11 +240,11 @@ public class RepositoryService : IRepositoryService
             SqliteParameter[] parameters = new SqliteParameter[]
             {
                 new(":UserId", userId),
-                new(":PostGuid", blogPost.PostGuid.ToString()),
+                new(":PostGuid", blogPost.PostGuid.ToString().ToUpperInvariant()),
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostCreatedOn", blogPost.PostCreatedOn.ToString("yyyy-MM-ddThh-mm-ssZ")),
+                new(":PostCreatedOn", blogPost.PostCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ")),
                 new(":PostModifiedOn", DBNull.Value)
             };
 
@@ -278,8 +280,8 @@ public class RepositoryService : IRepositoryService
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostModifiedOn", DateTime.UtcNow.ToString("yyyy-MM-ddThh-mm-ssZ")),
-                new(":PostGuid", blogPost.PostGuid.ToString())
+                new(":PostModifiedOn", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                new(":PostGuid", blogPost.PostGuid.ToString().ToUpperInvariant())
             };
 
             using SqliteCommand command = connection.CreateCommand();
@@ -350,12 +352,12 @@ public class RepositoryService : IRepositoryService
             {
                 blogPost.PostId = Convert.ToInt32(reader["PostId"]);
                 blogPost.UserId = Convert.ToInt32(reader["UserId"]);
-                blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]));
+                blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]).ToUpperInvariant());
                 blogPost.PostTitle = Convert.ToString(reader["PostTitle"]);
                 blogPost.PostContent = Convert.ToString(reader["PostContent"]);
                 blogPost.PostTags = Convert.ToString(reader["PostTags"]);
                 blogPost.PostCreatedOn = Convert.ToDateTime(reader["PostCreatedOn"]);
-                blogPost.PostModifiedOn = Convert.ToDateTime(reader["PostModifiedOn"]);
+                blogPost.PostModifiedOn = (reader["PostModifiedOn"] is DBNull) ? DateTime.MinValue : Convert.ToDateTime(reader["PostModifiedOn"]);
             }
 
             if (blogPost != null)
@@ -393,12 +395,12 @@ public class RepositoryService : IRepositoryService
                     BlogPostDto blogPost = new BlogPostDto();
                     blogPost.PostId = Convert.ToInt32(reader["PostId"]);
                     blogPost.UserId = Convert.ToInt32(reader["UserId"]);
-                    blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]));
+                    blogPost.PostGuid = Guid.Parse(Convert.ToString(reader["PostGuid"]).ToUpperInvariant());
                     blogPost.PostTitle = Convert.ToString(reader["PostTitle"]);
                     blogPost.PostContent = Convert.ToString(reader["PostContent"]);
                     blogPost.PostTags = Convert.ToString(reader["PostTags"]);
                     blogPost.PostCreatedOn = Convert.ToDateTime(reader["PostCreatedOn"]);
-                    blogPost.PostModifiedOn = Convert.ToDateTime(reader["PostModifiedOn"]);
+                    blogPost.PostModifiedOn = (reader["PostModifiedOn"] is DBNull) ? DateTime.MinValue : Convert.ToDateTime(reader["PostModifiedOn"]);
 
                     blogPosts.Add(blogPost);
                 }
