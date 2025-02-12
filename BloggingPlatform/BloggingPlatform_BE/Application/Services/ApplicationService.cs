@@ -18,7 +18,6 @@ public class ApplicationService : IApplicationService
         _repositoryService = repositoryService;
         _directory = directory;
         _logger = logger;
-        Initialize();
     }
 
     #region User
@@ -171,8 +170,7 @@ public class ApplicationService : IApplicationService
     #endregion
 
     #region initialize
-    private void Initialize() => CreateDataBase();
-    private void CreateDataBase()
+    public void CreateDataBase()
     {
         if (!File.Exists(_filePath))
         {

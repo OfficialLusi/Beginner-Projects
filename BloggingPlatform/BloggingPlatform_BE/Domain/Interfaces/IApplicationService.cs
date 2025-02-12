@@ -15,5 +15,7 @@ namespace BloggingPlatform_BE.Domain.Interfaces
         public void DeleteBlogPost(Guid blogPostGuid);
         public BlogPostDto GetBlogPostByGuid(Guid blogPostGuid);
         public List<BlogPostDto> GetAllBlogPosts();
+
+        public void CreateDataBase();
     }
 }

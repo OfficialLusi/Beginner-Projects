@@ -47,12 +47,12 @@ public class RepositoryService : IRepositoryService
 
             SqliteParameter[] parameters = new SqliteParameter[]
             {
-                new(":UserGuid", user.UserGuid.ToString()),
+                new(":UserGuid", Convert.ToString(user.UserGuid)),
                 new(":UserName", user.UserName),
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
                 new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn)
+                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddThh:mm:ssZ"))
             };
 
             using SqliteCommand command = connection.CreateCommand();
@@ -89,7 +89,7 @@ public class RepositoryService : IRepositoryService
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
                 new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn),
+                new(":UserCreatedOn", user.UserCreatedOn.ToString()),
                 new(":UserGuid", user.UserGuid.ToString())
             };
 
@@ -139,7 +139,7 @@ public class RepositoryService : IRepositoryService
             {
                 connection.Open();
 
-                string query = "SELECT * FROM USERS         " +
+                string query = "SELECT * FROM Users         " +
                                "WHERE UserGuid = :UserGuid  ";
 
                 SqliteParameter parameter = new SqliteParameter(":UserGuid", userGuid);
@@ -242,7 +242,7 @@ public class RepositoryService : IRepositoryService
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostCreatedOn", blogPost.PostCreatedOn),
+                new(":PostCreatedOn", blogPost.PostCreatedOn.ToString("yyyy-MM-ddThh-mm-ssZ")),
                 new(":PostModifiedOn", DBNull.Value)
             };
 
@@ -278,7 +278,7 @@ public class RepositoryService : IRepositoryService
                 new(":PostTitle", blogPost.PostTitle),
                 new(":PostContent", blogPost.PostContent),
                 new(":PostTags", blogPost.PostTags),
-                new(":PostModifiedOn", DateTime.UtcNow),
+                new(":PostModifiedOn", DateTime.UtcNow.ToString("yyyy-MM-ddThh-mm-ssZ")),
                 new(":PostGuid", blogPost.PostGuid.ToString())
             };
 
