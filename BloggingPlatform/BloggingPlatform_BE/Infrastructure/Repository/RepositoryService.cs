@@ -1,9 +1,8 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
 using Microsoft.Data.Sqlite;
-using System.Diagnostics;
 using System.Data.SQLite;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using LusiUtilsLibrary.Backend.APIs_REST;
 
 namespace BloggingPlatform_BE.Infrastructure.Repository;
 
@@ -26,9 +25,9 @@ public class RepositoryService : IRepositoryService
     public RepositoryService(string connectionString, string dbName, ILogger<IRepositoryService> logger)
     {
         #region InitialChecks
-        InitialCheck(connectionString, "ConnectionString cannot be null");
-        InitialCheck(dbName, "Database name cannot be null");
-        InitialCheck(logger, "Logger cannot be null");
+        InitializeChecks.InitialCheck(connectionString, "ConnectionString cannot be null");
+        InitializeChecks.InitialCheck(dbName, "Database name cannot be null");
+        InitializeChecks.InitialCheck(logger, "Logger cannot be null");
         #endregion
 
         _connectionString = connectionString;
@@ -517,16 +516,4 @@ public class RepositoryService : IRepositoryService
         command.ExecuteNonQuery();
     }
     #endregion
-
-
-    #region helper
-    private void InitialCheck(object variable, string message)
-    {
-        if (variable is null)
-        {
-            ArgumentNullException.ThrowIfNull(variable, message);
-        }
-    }
-    #endregion
-
 }

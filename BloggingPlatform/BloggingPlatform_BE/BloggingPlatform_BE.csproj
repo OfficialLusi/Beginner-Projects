@@ -16,4 +16,8 @@
     <None Include="LusiUtilsLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
+using LusiUtilsLibrary.Backend.APIs_REST;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BloggingPlatform_BE.Infrastructure.Controllers;
@@ -10,10 +11,18 @@ public class BloggingPlatformController : Controller
 {
 
     private readonly IApplicationService _service;
+    private readonly ILogger<BloggingPlatformController> _logger;
 
-    public BloggingPlatformController(IApplicationService service)
+    public BloggingPlatformController(IApplicationService service, ILogger<BloggingPlatformController> logger)
     {
+
+        #region Initialize checks
+        InitializeChecks.InitialCheck(service, "ApplicationService cannot be null");
+        InitializeChecks.InitialCheck(logger, "Logger cannot be null");
+        #endregion
+
         _service = service;
+        _logger = logger;
     }
 
     #region Users
@@ -23,8 +32,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult AddUser(UserDto user)
     {
-        _service.AddUser(user);
-        return Ok();
+        try
+        {
+            _service.AddUser(user);
+            _logger.LogInformation("Blogging Platform Controller - Add user call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Add user call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpPut]
@@ -32,8 +50,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult UpdateUser(UserDto user)
     {
-        _service.UpdateUser(user);
-        return Ok();
+        try
+        {
+            _service.UpdateUser(user);
+            _logger.LogInformation("Blogging Platform Controller - Update user call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Update user call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpDelete]
@@ -41,8 +68,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult DeleteUser(string userGuid)
     {
-        _service.DeleteUser(Guid.Parse(userGuid));
-        return Ok();
+        try
+        {
+            _service.DeleteUser(Guid.Parse(userGuid));
+            _logger.LogInformation("Blogging Platform Controller - Delete user call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Delete user call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpGet]
@@ -50,7 +86,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetUserByGuid(string userGuid)
     {
-        return Ok(_service.GetUserByGuid(Guid.Parse(userGuid)));
+        try
+        {
+            UserDto user = _service.GetUserByGuid(Guid.Parse(userGuid));
+            _logger.LogInformation("Blogging Platform Controller - Get user by guid call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Get user by guid call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpGet]
@@ -58,7 +104,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetAllUsers()
     {
-        return Ok(_service.GetAllUsers());
+        try
+        {
+            List<UserDto> users = _service.GetAllUsers();
+            _logger.LogInformation("Blogging Platform Controller - Get all users call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok(users);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Get all users call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     #endregion
@@ -70,8 +126,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult AddBlogPost(BlogPostDto blogPost)
     {
-        _service.AddBlogPost(blogPost);
-        return Ok();
+        try
+        {
+            _service.AddBlogPost(blogPost);
+            _logger.LogInformation("Blogging Platform Controller - Add blog post call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Add blog post call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpPut]
@@ -79,8 +144,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult UpdateBlogPost(BlogPostDto blogPost)
     {
-        _service.UpdateBlogPost(blogPost);
-        return Ok();
+        try
+        {
+            _service.UpdateBlogPost(blogPost);
+            _logger.LogInformation("Blogging Platform Controller - Update blog post call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Update blog post call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpDelete]
@@ -88,8 +162,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult DeleteBlogPost(string blogPostGuid)
     {
-        _service.DeleteBlogPost(Guid.Parse(blogPostGuid));
-        return Ok();
+        try
+        {
+            _service.DeleteBlogPost(Guid.Parse(blogPostGuid));
+            _logger.LogInformation("Blogging Platform Controller - Delete blog post call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Delete blog post call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpGet]
@@ -97,7 +180,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetBlogPostByGuid(string blogPostGuid)
     {
-        return Ok(_service.GetBlogPostByGuid(Guid.Parse(blogPostGuid)));
+        try
+        {
+            BlogPostDto blogPost = _service.GetBlogPostByGuid(Guid.Parse(blogPostGuid));
+            _logger.LogInformation("Blogging Platform Controller - Get blog post by guid call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok(blogPost);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Get blog post by guid call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     [HttpGet]
@@ -105,7 +198,17 @@ public class BloggingPlatformController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetAllBlogPosts()
     {
-        return Ok(_service.GetAllBlogPosts());
+        try
+        {
+            List<BlogPostDto> blogPosts = _service.GetAllBlogPosts();
+            _logger.LogInformation("Blogging Platform Controller - Get all blog posts call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
+            return Ok(blogPosts);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Blogging Platform Controller - Get all blog posts call not executed. {exMessage}", ex.Message);
+            return BadRequest();
+        }
     }
 
     #endregion
