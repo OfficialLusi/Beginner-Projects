@@ -2,6 +2,7 @@
 using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using Microsoft.Extensions.Logging;
+using System.Net;
 
 namespace BloggingPlatform_FE.Services;
 
@@ -135,14 +136,14 @@ public class RequestService_FE
         }
     }
 
-    public async Task<BlogPostDto> GetBlogPostByGuid(Guid blogPostGuid)
+    public async Task<ApiResponse<BlogPostDto>> GetBlogPostByGuid(Guid blogPostGuid)
     {
         try
         {
             string[] args = [blogPostGuid.ToString()];
-            BlogPostDto blogPost = await _service.ExecuteRequestAsync<BlogPostDto>("GetBlogPostByGuid", RequestType.GET, null, args);
+            ApiResponse<BlogPostDto> response = await _service.ExecuteRequestAsync<BlogPostDto>("GetAllBlogPosts", RequestType.GET, null, args);
             _logger.LogInformation("RequestService_FE - Get blog post by guid call executed correctly");
-            return blogPost;
+            return response;
         }
         catch (Exception ex)
         {
@@ -150,13 +151,13 @@ public class RequestService_FE
         }
     }
 
-    public async Task<List<BlogPostDto>> GetAllBlogPosts()
+    public async Task<ApiResponse<List<BlogPostDto>>> GetAllBlogPosts()
     {
         try
         {
-            List<BlogPostDto> blogPosts = await _service.ExecuteRequestAsync<List<BlogPostDto>>("GetAllBlogPosts", RequestType.GET, null);
+            ApiResponse<List<BlogPostDto>> response = await _service.ExecuteRequestAsync<List<BlogPostDto>>("GetAllBlogPosts", RequestType.GET, null);
             _logger.LogInformation("RequestService_FE - Get all blog posts call executed correctly");
-            return blogPosts;
+            return response;
         }
         catch (Exception ex)
         {
@@ -164,4 +165,18 @@ public class RequestService_FE
         }
     }
     #endregion
+
+    public async Task<UserDto> AuthenticateUser(UserDto user)
+    {
+        try
+        {
+            await _service.ExecuteRequestAsync<UserDto>("AuthenticateUser", RequestType.POST, user).;
+            _logger.LogInformation("RequestService_FE - Authenticate user call executed correctly");
+            return returnedUser;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("RequestService_FE - Authenticate user call not executed.", ex);
+        }
+    }
 }
