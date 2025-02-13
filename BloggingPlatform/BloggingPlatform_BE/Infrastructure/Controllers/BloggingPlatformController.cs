@@ -1,12 +1,12 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
-using LusiUtilsLibrary.Backend.APIs_REST;
+using LusiUtilsLibrary.Backend.Initialization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BloggingPlatform_BE.Infrastructure.Controllers;
 
 [ApiController]
-[Route("/api/BloggingPlatform")]
+[Route("api/BloggingPlatform")]
 public class BloggingPlatformController : Controller
 {
 
@@ -89,6 +89,8 @@ public class BloggingPlatformController : Controller
         try
         {
             UserDto user = _service.GetUserByGuid(Guid.Parse(userGuid));
+            user.Salt = "";
+            user.HashCode = "";
             _logger.LogInformation("Blogging Platform Controller - Get user by guid call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
             return Ok(user);
         }
@@ -107,6 +109,11 @@ public class BloggingPlatformController : Controller
         try
         {
             List<UserDto> users = _service.GetAllUsers();
+            foreach(UserDto user in users)
+            {
+                user.Salt = "";
+                user.HashCode = "";
+            }
             _logger.LogInformation("Blogging Platform Controller - Get all users call executed succesfully with status code <{statusCode}>", StatusCodes.Status200OK);
             return Ok(users);
         }

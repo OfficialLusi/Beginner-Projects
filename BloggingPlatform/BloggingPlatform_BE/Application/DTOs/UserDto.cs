@@ -1,4 +1,6 @@
-﻿namespace BloggingPlatform_BE.Application.DTOs;
+﻿using System.Security;
+
+namespace BloggingPlatform_BE.Application.DTOs;
 
 public class UserDto
 {
@@ -7,6 +9,8 @@ public class UserDto
     public string UserName { get; set; }
     public string UserSurname { get; set; }
     public string UserEmail { get; set; }
-    public string UserPassword { get; set; }
-    public DateTime UserCreatedOn { get; set; } // todo verify if from frontend this is a string, if yes, check repository method
+    public string? UserPassword { get; set; }
+    public DateTime UserCreatedOn { get; set; } 
+    public string Salt { get; set; }    
+    public string HashCode { get; set; }
 }

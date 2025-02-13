@@ -8,4 +8,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\c-sharp_Utils\LusiUtilsLibrary\LusiUtilsLibrary.csproj" />
+    <ProjectReference Include="..\BloggingPlatform_BE\BloggingPlatform_BE.csproj" />
+  </ItemGroup>
+
 </Project>

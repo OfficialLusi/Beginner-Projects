@@ -1,4 +1,6 @@
-﻿namespace BloggingPlatform_BE.Application.DTOs;
+﻿using System.Security;
+
+namespace BloggingPlatform_FE.Models;
 
 public class UserDto
 {
@@ -7,6 +9,6 @@ public class UserDto
     public string UserName { get; set; }
     public string UserSurname { get; set; }
     public string UserEmail { get; set; }
-    public string UserPassword { get; set; }
+    public String UserPassword { get; set; } 
     public DateTime UserCreatedOn { get; set; }
 }

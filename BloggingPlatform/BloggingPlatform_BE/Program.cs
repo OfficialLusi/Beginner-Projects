@@ -34,14 +34,24 @@ internal class Program
             return new RepositoryService(connectionString, dbName, repoLogger);
         });
 
+        builder.Services.AddTransient<AuthenticationService>(provider =>
+        {
+            // Getting repository service from container
+            IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
+
+            return new AuthenticationService(repositoryService);
+        });
+
         builder.Services.AddSingleton<IApplicationService>(provider =>
         {
             // Getting dependencies from di container
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
+            AuthenticationService authService = provider.GetRequiredService<AuthenticationService>();
             ILogger<ApplicationService> appLogger = provider.GetRequiredService<ILogger<ApplicationService>>();
 
-            return new ApplicationService(dbPath, repositoryService, baseDir, appLogger);
+            return new ApplicationService(dbPath, repositoryService, baseDir, appLogger, authService);
         });
+
 
 
         builder.Services.AddControllers();

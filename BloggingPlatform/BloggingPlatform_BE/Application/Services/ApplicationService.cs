@@ -5,25 +5,33 @@ namespace BloggingPlatform_BE.Application.Services;
 
 public class ApplicationService : IApplicationService
 {
+    #region private fields
     private readonly string _filePath;
     private readonly string _directory;
     private readonly IRepositoryService _repositoryService;
     private readonly ILogger<ApplicationService> _logger;
+    private readonly AuthenticationService _authService;
+    #endregion
 
-    public ApplicationService(string filePath, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger)
+    #region constructor
+    public ApplicationService(string filePath, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger, AuthenticationService authService)
     {
         _filePath = filePath;
         _repositoryService = repositoryService;
         _directory = directory;
         _logger = logger;
+        _authService = authService;
     }
+    #endregion
 
     #region User
-
     public void AddUser(UserDto user)
     {
         try
         {
+            List<byte[]> authList = _authService.CreateHash(user.UserPassword);
+            user.Salt = Convert.ToBase64String(authList[0]);
+            user.HashCode = Convert.ToBase64String(authList[1]);
             _repositoryService.AddUser(user);
             _logger.LogInformation("Application Service - user with userGuid : {userGuid} added succesfully", user.UserGuid);
         }
@@ -37,8 +45,27 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _repositoryService.UpdateUser(user);
-            _logger.LogInformation("Application Service - user with userGuid : {userGuid} updated succesfully", user.UserGuid);
+            UserDto? returnedUser = _repositoryService.GetAllUsers().FirstOrDefault(x => x.UserGuid == user.UserGuid);
+
+            if(returnedUser != null)
+            {
+                if (_authService.IsPasswordChanged(user))
+                {
+                    List<byte[]> authList = _authService.CreateHash(user.UserPassword);
+                    user.Salt = Convert.ToBase64String(authList[0]);
+                    user.HashCode = Convert.ToBase64String(authList[1]);
+                }
+                else
+                {
+                    user.Salt = returnedUser.Salt;
+                    user.HashCode = returnedUser.HashCode;
+                }
+                _repositoryService.UpdateUser(user);
+                _logger.LogInformation("Application Service - user with userGuid : {userGuid} updated succesfully", user.UserGuid);
+
+            }
+            else
+                throw new Exception($"Application Service - User with guid {user.UserGuid} not found, not updated");
         }
         catch (Exception ex)
         {
@@ -86,15 +113,12 @@ public class ApplicationService : IApplicationService
         }
         catch (Exception ex)
         {
-            throw new Exception("Application Service - Error during retrieving all users.", ex); // todo db null return
+            throw new Exception("Application Service - Error during retrieving all users.", ex);
         }
     }
-
     #endregion
 
-
     #region BlogPost
-
     public void AddBlogPost(BlogPostDto blogPost)
     {
         try
@@ -112,8 +136,15 @@ public class ApplicationService : IApplicationService
     {
         try
         {
-            _repositoryService.UpdateBlogPost(blogPost);
-            _logger.LogInformation("Application Service - post with post guid: {postGuid} updated succesfully", blogPost.PostGuid);
+            BlogPostDto? returnedBlogPost = _repositoryService.GetAllBlogPosts().FirstOrDefault(x => x.PostGuid == blogPost.PostGuid);
+
+            if (returnedBlogPost != null) 
+            {
+                _repositoryService.UpdateBlogPost(blogPost);
+                _logger.LogInformation("Application Service - post with post guid: {postGuid} updated succesfully", blogPost.PostGuid);
+            }
+            else
+                throw new Exception($"Application Service - post with guid {blogPost.PostGuid} not found, not updated");
         }
         catch (Exception ex)
         {
@@ -164,7 +195,6 @@ public class ApplicationService : IApplicationService
             throw new Exception("Application Service - Error during retrieving all blog posts.", ex);
         }
     }
-
     #endregion
 
     #region initialize
@@ -176,9 +206,7 @@ public class ApplicationService : IApplicationService
             _repositoryService.InitializeTables(_directory ,_filePath);
         }
         else
-        {
             _logger.LogInformation("Database file found at {filePath}. No need to create tables.", _filePath);
-        }
     }
     #endregion
 }

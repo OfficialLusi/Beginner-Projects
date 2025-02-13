@@ -2,7 +2,8 @@
 using BloggingPlatform_BE.Domain.Interfaces;
 using Microsoft.Data.Sqlite;
 using System.Data.SQLite;
-using LusiUtilsLibrary.Backend.APIs_REST;
+using LusiUtilsLibrary.Backend.Initialization;
+using System.Text;
 
 namespace BloggingPlatform_BE.Infrastructure.Repository;
 
@@ -43,8 +44,8 @@ public class RepositoryService : IRepositoryService
             using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
 
-            string query = "INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) " +
-                           "VALUES (:UserGuid, :UserName, :UserSurname, :UserEmail, :UserPassword, :UserCreatedOn)      ";
+            string query = "INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserCreatedOn, Salt, HashCode) " +
+                           "VALUES (:UserGuid, :UserName, :UserSurname, :UserEmail, :UserCreatedOn, :Salt, :HashCode)    ";
 
             SqliteParameter[] parameters = new SqliteParameter[]
             {
@@ -52,15 +53,16 @@ public class RepositoryService : IRepositoryService
                 new(":UserName", user.UserName),
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
-                new(":UserPassword", user.UserPassword),
-                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ"))
+                new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                new(":Salt",user.Salt.ToString()),
+                new(":HashCode", user.HashCode.ToString())
             };
 
             using SqliteCommand command = connection.CreateCommand();
             command.CommandText = query;
             command.Parameters.AddRange(parameters);
             command.ExecuteNonQuery();
-            _logger.LogInformation("Repository Service - Correctly added a new user with guid <{userGuid}>to the db.", user.UserGuid);
+            _logger.LogInformation("Repository Service - Correctly added a new user with guid <{userGuid}> to the db.", user.UserGuid);
         }
         catch (Exception ex)
         {
@@ -72,7 +74,6 @@ public class RepositoryService : IRepositoryService
     {
         try
         {
-            // todo add control on user id on the caller method
             using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
 
@@ -80,8 +81,9 @@ public class RepositoryService : IRepositoryService
                            "UserName = :UserName,           " +
                            "UserSurname = :UserSurname,     " +
                            "UserEmail = :UserEmail,         " +
-                           "UserPassword = :UserPassword,   " +
-                           "UserCreatedOn = :UserCreatedOn  " +
+                           "UserCreatedOn = :UserCreatedOn, " +
+                           "Salt = :Salt,                   " +
+                           "HashCode = :HashCode            " +
                            "WHERE UserGuid = :UserGuid      ";
 
             SqliteParameter[] parameters = new SqliteParameter[]
@@ -89,8 +91,9 @@ public class RepositoryService : IRepositoryService
                 new(":UserName", user.UserName),
                 new(":UserSurname", user.UserSurname),
                 new(":UserEmail", user.UserEmail),
-                new(":UserPassword", user.UserPassword),
                 new(":UserCreatedOn", user.UserCreatedOn.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                new(":Salt", user.Salt.ToString()),
+                new(":HashCode", user.HashCode.ToString()),
                 new(":UserGuid", user.UserGuid.ToString().ToUpperInvariant())
             };
 
@@ -156,8 +159,9 @@ public class RepositoryService : IRepositoryService
                     user.UserName = Convert.ToString(reader["UserName"]);
                     user.UserSurname = Convert.ToString(reader["UserSurname"]);
                     user.UserEmail = Convert.ToString(reader["UserEmail"]);
-                    user.UserPassword = Convert.ToString(reader["UserPassword"]);
                     user.UserCreatedOn = Convert.ToDateTime(reader["UserCreatedOn"]);
+                    user.Salt = reader["Salt"].ToString();
+                    user.HashCode = reader["HashCode"].ToString();
                 }
             }
 
@@ -199,8 +203,9 @@ public class RepositoryService : IRepositoryService
                     user.UserName = Convert.ToString(reader["UserName"]);
                     user.UserSurname = Convert.ToString(reader["UserSurname"]);
                     user.UserEmail = Convert.ToString(reader["UserEmail"]);
-                    user.UserPassword = Convert.ToString(reader["UserPassword"]);
                     user.UserCreatedOn = Convert.ToDateTime(reader["UserCreatedOn"]);
+                    user.Salt = Convert.ToString(reader["Salt"]);
+                    user.HashCode = Convert.ToString(reader["HashCode"]);
 
                     users.Add(user);
                 }
@@ -263,7 +268,6 @@ public class RepositoryService : IRepositoryService
     {
         try
         {
-            // todo add control on user id on the caller method
             using SqliteConnection connection = new SqliteConnection(_connectionString);
             connection.Open();
 
@@ -445,7 +449,9 @@ public class RepositoryService : IRepositoryService
                        "UserSurname TEXT NOT NULL,          " +
                        "UserEmail TEXT NOT NULL,            " +
                        "UserPassword TEXT NOT NULL,         " +
-                       "UserCreatedOn TEXT NOT NULL         " +
+                       "UserCreatedOn TEXT NOT NULL,        " +
+                       "Salt TEXT NULL,                     " +
+                       "Hash TEXT NULL,                     " +
                        ")                                   ";
 
         using SqliteCommand command = connection.CreateCommand();

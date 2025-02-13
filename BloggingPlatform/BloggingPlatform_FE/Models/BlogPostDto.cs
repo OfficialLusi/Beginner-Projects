@@ -1,4 +1,4 @@
-﻿namespace BloggingPlatform_BE.Application.DTOs;
+﻿namespace BloggingPlatform_FE.Models;
 
 public class BlogPostDto
 {
@@ -9,5 +9,5 @@ public class BlogPostDto
     public string PostContent { get; set; }
     public string PostTags { get; set; }
     public DateTime PostCreatedOn { get; set; }
-    public DateTime PostModifiedOn { get; set; } 
+    public DateTime PostModifiedOn { get; set; }
 }

@@ -1,11 +1,12 @@
 CREATE TABLE Users ( 
 	UserId			INTEGER PRIMARY KEY	AUTOINCREMENT	,             
-	UserGuid		TEXT NOT NULL					,             
-	UserName		TEXT NOT NULL					,             
-	UserSurname		TEXT NOT NULL					,          
-	UserEmail		TEXT NOT NULL					,            
-	UserPassword	TEXT NOT NULL					,         
-	UserCreatedOn	TEXT NOT NULL         
+	UserGuid		TEXT NOT NULL						,             
+	UserName		TEXT NOT NULL						,             
+	UserSurname		TEXT NOT NULL						,          
+	UserEmail		TEXT NOT NULL						,            
+	UserCreatedOn	TEXT NOT NULL						,
+	Salt			TEXT NULL							,
+	HashCode		TEXT NULL			
 	);                                  
 
 
@@ -22,5 +23,5 @@ CREATE TABLE BlogPosts (
    );
 
 
-INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserPassword, UserCreatedOn) 
-VALUES ('366166CC-37D8-4669-9057-4068DF6D4BC8', 'admin', 'admin', 'admin@admin.admin', 'admin', '2025-01-01T00:00:00Z');
+INSERT INTO Users (UserGuid, UserName, UserSurname, UserEmail, UserCreatedOn) 
+VALUES ('366166CC-37D8-4669-9057-4068DF6D4BC8', 'admin', 'admin@admin.admin', 'admin', '2025-01-01T00:00:00Z');
