@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace BloggingPlatform_BE.Application.DTOs;
+﻿namespace BloggingPlatform_BE.Application.DTOs;
 
 public class UserDto
 {

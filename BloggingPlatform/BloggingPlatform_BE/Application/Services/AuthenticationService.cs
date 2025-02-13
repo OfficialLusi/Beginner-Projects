@@ -1,20 +1,28 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
 using LusiUtilsLibrary.Backend.Crypting;
-using System.Linq;
+using LusiUtilsLibrary.Backend.Initialization;
 
 namespace BloggingPlatform_BE.Application.Services;
 
-public class AuthenticationService
+public class AuthenticationService : IAuthenticationService
 {
-
+    #region private fields
     private readonly IRepositoryService _repositoryService;
+    #endregion
 
+    #region constructor
     public AuthenticationService(IRepositoryService repositoryService)
-    {                            
+    {
+        #region initialize checks
+        InitializeChecks.InitialCheck(repositoryService, "Repository service cannot be null");
+        #endregion
+
         _repositoryService = repositoryService;
     }
+    #endregion
 
+    #region public methods
     public List<byte[]> CreateHash(string password)
     {
         byte[] salt = HashCrypting.GenerateSalt();
@@ -47,4 +55,5 @@ public class AuthenticationService
             return false;
         return true;
     }
+    #endregion
 }

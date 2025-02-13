@@ -9,13 +9,14 @@ namespace BloggingPlatform_BE.Infrastructure.Controllers;
 [Route("api/BloggingPlatform")]
 public class BloggingPlatformController : Controller
 {
-
+    #region private fields
     private readonly IApplicationService _service;
     private readonly ILogger<BloggingPlatformController> _logger;
+    #endregion
 
+    #region constructor
     public BloggingPlatformController(IApplicationService service, ILogger<BloggingPlatformController> logger)
     {
-
         #region Initialize checks
         InitializeChecks.InitialCheck(service, "ApplicationService cannot be null");
         InitializeChecks.InitialCheck(logger, "Logger cannot be null");
@@ -24,6 +25,7 @@ public class BloggingPlatformController : Controller
         _service = service;
         _logger = logger;
     }
+    #endregion
 
     #region Users
 

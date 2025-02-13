@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Domain.Interfaces;
+using LusiUtilsLibrary.Backend.Initialization;
 
 namespace BloggingPlatform_BE.Application.Services;
 
@@ -10,12 +11,20 @@ public class ApplicationService : IApplicationService
     private readonly string _directory;
     private readonly IRepositoryService _repositoryService;
     private readonly ILogger<ApplicationService> _logger;
-    private readonly AuthenticationService _authService;
+    private readonly IAuthenticationService _authService;
     #endregion
 
     #region constructor
-    public ApplicationService(string filePath, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger, AuthenticationService authService)
+    public ApplicationService(string filePath, IRepositoryService repositoryService, string directory, ILogger<ApplicationService> logger, IAuthenticationService authService)
     {
+        #region initialize checks
+        InitializeChecks.InitialCheck(filePath, "File path cannot be null");
+        InitializeChecks.InitialCheck(repositoryService, "Repository service cannot be null");
+        InitializeChecks.InitialCheck(directory, "Directory cannot be null");
+        InitializeChecks.InitialCheck(logger, "Logger cannot be null");
+        InitializeChecks.InitialCheck(authService, "Authentication Service cannot be null");
+        #endregion
+
         _filePath = filePath;
         _repositoryService = repositoryService;
         _directory = directory;

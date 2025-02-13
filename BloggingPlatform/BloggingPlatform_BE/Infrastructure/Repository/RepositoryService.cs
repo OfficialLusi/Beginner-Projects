@@ -3,7 +3,6 @@ using BloggingPlatform_BE.Domain.Interfaces;
 using Microsoft.Data.Sqlite;
 using System.Data.SQLite;
 using LusiUtilsLibrary.Backend.Initialization;
-using System.Text;
 
 namespace BloggingPlatform_BE.Infrastructure.Repository;
 
@@ -19,10 +18,13 @@ namespace BloggingPlatform_BE.Infrastructure.Repository;
 
 public class RepositoryService : IRepositoryService
 {
-    private readonly string _dbName; // BloggingPlatform_SQLite_DB
+    #region private fields
+    private readonly string _dbName; // BloggingPlatform.db
     private readonly string _connectionString; // only the path to the db
     private readonly ILogger<IRepositoryService> _logger;
+    #endregion
 
+    #region constructor
     public RepositoryService(string connectionString, string dbName, ILogger<IRepositoryService> logger)
     {
         #region InitialChecks
@@ -35,6 +37,7 @@ public class RepositoryService : IRepositoryService
         _dbName = dbName;
         _logger = logger;
     }
+    #endregion
 
     #region User
     public void AddUser(UserDto user)
@@ -228,7 +231,6 @@ public class RepositoryService : IRepositoryService
     #endregion
 
     #region BlogPost
-
     public void AddBlogPost(BlogPostDto blogPost)
     {
         try
@@ -504,8 +506,6 @@ public class RepositoryService : IRepositoryService
 
     private void CreateDatabase(string directory, string filePath)
     {
-        string directoryPath = Path.GetDirectoryName(filePath);
-
         if (!File.Exists(filePath))
             SQLiteConnection.CreateFile(filePath);
 

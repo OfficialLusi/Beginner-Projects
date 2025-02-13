@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Application.Services;
+using LusiUtilsLibrary.Backend.Initialization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BloggingPlatform_BE.Infrastructure.Controllers
@@ -8,16 +9,25 @@ namespace BloggingPlatform_BE.Infrastructure.Controllers
     [Route("api/Authentication")]
     public class AuthenticationController : Controller
     {
-
+        #region private fields
         private readonly ILogger<AuthenticationController> _logger;
         private readonly AuthenticationService _authService;
+        #endregion
 
+        #region constructor
         public AuthenticationController(ILogger<AuthenticationController> logger, AuthenticationService authService)
         {
+            #region initialize checks
+            InitializeChecks.InitialCheck(logger, "Logger cannot be null");
+            InitializeChecks.InitialCheck(authService, "Authentication service cannot be null");
+            #endregion
+
             _logger = logger;
             _authService = authService;
         }
+        #endregion
 
+        #region public api methods
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -48,5 +58,6 @@ namespace BloggingPlatform_BE.Infrastructure.Controllers
                 }
             }
         }
+        #endregion
     }
 }

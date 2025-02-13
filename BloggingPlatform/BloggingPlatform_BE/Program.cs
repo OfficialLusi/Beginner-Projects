@@ -34,7 +34,7 @@ internal class Program
             return new RepositoryService(connectionString, dbName, repoLogger);
         });
 
-        builder.Services.AddTransient<AuthenticationService>(provider =>
+        builder.Services.AddTransient<IAuthenticationService>(provider =>
         {
             // Getting repository service from container
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
@@ -46,26 +46,26 @@ internal class Program
         {
             // Getting dependencies from di container
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
-            AuthenticationService authService = provider.GetRequiredService<AuthenticationService>();
+            IAuthenticationService authService = provider.GetRequiredService<IAuthenticationService>();
             ILogger<ApplicationService> appLogger = provider.GetRequiredService<ILogger<ApplicationService>>();
 
             return new ApplicationService(dbPath, repositoryService, baseDir, appLogger, authService);
         });
 
-
-
         builder.Services.AddControllers();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         WebApplication app = builder.Build();
 
+        // handling creating database at the start of the application
         using (IServiceScope scope = app.Services.CreateScope())
         {
             IServiceProvider services = scope.ServiceProvider;
             IApplicationService applicationService = services.GetRequiredService<IApplicationService>();
-            CreateDatabase(applicationService);
+            applicationService.CreateDataBase();
         }
 
         // Configure the HTTP request pipeline.
@@ -84,8 +84,4 @@ internal class Program
         app.Run();
     }
 
-    private static void CreateDatabase(IApplicationService service)
-    {
-        service.CreateDataBase();
-    }
 }
