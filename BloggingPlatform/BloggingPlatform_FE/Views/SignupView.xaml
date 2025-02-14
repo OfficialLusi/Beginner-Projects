@@ -27,10 +27,10 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0" Margin="0,0,0,0">
-                        <TextBlock Text="Name" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="Name" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
                     <Grid Grid.Column="2" Margin="0,0,0,0">
-                        <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Width="100"></TextBox>
+                        <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"></TextBox>
                     </Grid>
                 </Grid>
 
@@ -42,14 +42,14 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0" Margin="0,0,0,0">
-                        <TextBlock Text="Surname" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="Surname" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
                     <Grid Grid.Column="2" Margin="0,0,0,0">
-                        <TextBox Text="{Binding UserSurname, UpdateSourceTrigger=PropertyChanged}" Width="100"></TextBox>
+                        <TextBox Text="{Binding UserSurname, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"></TextBox>
                     </Grid>
                 </Grid>
 
-                <!-- first row, for userEmail parameter-->
+                <!-- third row, for userEmail parameter-->
                 <Grid Grid.Row="2" Margin="10,5,10,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MinWidth="100"/>
@@ -57,14 +57,14 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0" Margin="0,0,0,0">
-                        <TextBlock Text="Email" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="Email" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
                     <Grid Grid.Column="2" Margin="0,0,0,0">
-                        <TextBox Text="{Binding UserEmail, UpdateSourceTrigger=PropertyChanged}" Width="100"></TextBox>
+                        <TextBox Text="{Binding UserEmail, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"></TextBox>
                     </Grid>
                 </Grid>
 
-                <!-- first row, for userPassword parameter-->
+                <!-- fourth row, for userPassword parameter-->
                 <Grid Grid.Row="3" Margin="10,5,10,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MinWidth="100"/>
@@ -72,14 +72,14 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0" Margin="0,0,0,0">
-                        <TextBlock Text="Password" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="Password" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
                     <Grid Grid.Column="2" Margin="0,0,0,0">
-                        <TextBox Text="{Binding UserPassword1, UpdateSourceTrigger=PropertyChanged}" Width="100"></TextBox>
+                        <TextBox Text="{Binding UserPassword1, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"></TextBox>
                     </Grid>
                 </Grid>
 
-                <!-- first row, for userPassword parameter (check if it's inserted correctly)-->
+                <!-- fifth row, for userPassword parameter (check if it's inserted correctly)-->
                 <Grid Grid.Row="4" Margin="10,5,10,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MinWidth="100"/>
@@ -87,10 +87,10 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0" Margin="0,0,0,0">
-                        <TextBlock Text="Repeat Password" VerticalAlignment="Center"></TextBlock>
+                        <TextBlock Text="Repeat Password" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                     </Grid>
                     <Grid Grid.Column="2" Margin="0,0,0,0">
-                        <TextBox Text="{Binding UserPassword2, UpdateSourceTrigger=PropertyChanged}" Width="100"></TextBox>
+                        <TextBox Text="{Binding UserPassword2, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"></TextBox>
                     </Grid>
                 </Grid>
             </Grid>
