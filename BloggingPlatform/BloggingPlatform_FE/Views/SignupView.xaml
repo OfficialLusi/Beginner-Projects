@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="SignupView" Height="500" Width="800">
     <Grid Margin="150,100,150,100" Background="AliceBlue">
-        <StackPanel VerticalAlignment="Center">
+        <StackPanel VerticalAlignment="Center" Height="234">
             <TextBlock Text="Signup with your informations" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Center"/>
             <Grid>
                 <!-- defining 5 rows (one for each parameter)-->
@@ -94,6 +94,9 @@
                     </Grid>
                 </Grid>
             </Grid>
+
+            <Button Name="Signup" Content="Signup" Command="{Binding SignupCommand}" Margin="10" Height="30" Width="50"></Button>
+            
         </StackPanel>
     </Grid>
 </Window>
