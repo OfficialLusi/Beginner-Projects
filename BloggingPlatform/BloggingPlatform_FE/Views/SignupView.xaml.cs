@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BloggingPlatform_FE.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +20,10 @@ namespace BloggingPlatform_FE.Views
     /// </summary>
     public partial class SignupView : Window
     {
-        public SignupView()
+        public SignupView(SignupViewModel viewModel)
         {
             InitializeComponent();
+            DataContext = viewModel;
         }
     }
 }

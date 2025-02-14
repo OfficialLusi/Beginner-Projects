@@ -1,24 +1,20 @@
-﻿using System.Text;
+﻿using BloggingPlatform_FE.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace BloggingPlatform_FE
+namespace BloggingPlatform_FE.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(MainViewModel viewModel)
         {
             InitializeComponent();
+            // todo fondamentale, risolvendo le dipendenze con di, invece di passare qua l'oggetto nuovo,
+            // qli passo un oggetto passato dal costruttore, che verrà automaticamente risolto
+            // se sottoscritto in app.xaml.cs
+            DataContext = viewModel;
         }
     }
 }

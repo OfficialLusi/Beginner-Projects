@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BloggingPlatform_FE.ViewModels
 {
-    internal class HomeViewModel
+    public class HomeViewModel
     {
     }
 }

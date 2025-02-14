@@ -4,14 +4,15 @@ using System.Windows;
 namespace BloggingPlatform_FE.Views
 {
     /// <summary>
-    /// Interaction logic for LoginView.xaml
+    /// Interaction logic for LoginSignupDialog.xaml
     /// </summary>
-    public partial class LoginView : Window
+    public partial class LoginSignupDialogView : Window
     {
-        public LoginView(LoginViewModel viewModel)
+        public LoginSignupDialogView(LoginSignupDialogViewModel viewModel)
         {
             InitializeComponent();
             DataContext = viewModel;
         }
     }
 }
+

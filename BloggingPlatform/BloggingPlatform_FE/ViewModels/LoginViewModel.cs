@@ -3,6 +3,7 @@ using System.Windows.Input;
 using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Models;
 using BloggingPlatform_FE.Services;
+using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ public class LoginViewModel : INotifyPropertyChanged
         _navigationService = navigationService;
 
         LoginCommand = new RelayCommand(async () => await UserLogin());
-        NavigateToSignupCommand = new RelayCommand(async () => await UserSignup());
+        //NavigateToSignupCommand = new RelayCommand(async () => await UserSignup());
     }
 
     public string Email
@@ -52,7 +53,7 @@ public class LoginViewModel : INotifyPropertyChanged
     }
 
     public ICommand LoginCommand { get; }
-    public ICommand NavigateToSignupCommand { get; }
+    //public ICommand NavigateToSignupCommand { get; }
 
     #region private methods
 
@@ -63,17 +64,25 @@ public class LoginViewModel : INotifyPropertyChanged
             UserEmail = _email,
             UserPassword = _password
         };
-        if(_requestService.AuthenticateUser(user) == StatusCodes.Status200OK);
 
+        ApiResponse<UserDto> data = await _requestService.AuthenticateUser(user);
 
-        _navigationService.NavigateTo("Home");
+        if (Convert.ToInt32(data.StatusCode) == StatusCodes.Status200OK)
+        {
+            _navigationService.NavigateTo("Home");
+            // eventually take the user here
+            return;
+        }
+
+        // todo: call here the login error pupup.
+
     }
 
 
-    public async Task UserSignup()
-    {
-
-    }
+    //public async Task UserSignup()
+    //{
+    //    _navigationService.NavigateTo("Signup");
+    //}
 
     #endregion
 
