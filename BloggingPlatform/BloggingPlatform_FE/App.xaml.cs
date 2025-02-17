@@ -44,35 +44,38 @@ namespace BloggingPlatform_FE
             });
 
             // services subscription
-            services.AddSingleton<REST_RequestService>(provider =>
+
+            // rest service from library
+            services.AddSingleton<IREST_RequestService, REST_RequestService>(provider =>
             {
                 ILogger<REST_RequestService> logger = provider.GetRequiredService<ILogger<REST_RequestService>>();
 
                 return new REST_RequestService(logger, projectDirectory);
             });
 
-            services.AddSingleton<RequestService_FE>(provider =>
+            // rest service for frontend
+            services.AddSingleton<IRequestService_FE, RequestService_FE>(provider =>
             {
-                ILogger<RequestService_FE> logger = provider.GetRequiredService<ILogger<RequestService_FE>>();
-                REST_RequestService requestService = provider.GetRequiredService<REST_RequestService>();
+                ILogger<IRequestService_FE> logger = provider.GetRequiredService<ILogger<IRequestService_FE>>();
+                IREST_RequestService requestService = provider.GetRequiredService<IREST_RequestService>();
                 return new RequestService_FE(logger, requestService);
             });
 
+            // page navigation service
             services.AddTransient<INavigationService, NavigationService>(provider =>
             {
-                MainWindow mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-                return new NavigationService(provider, mainWindow);
+                return new NavigationService(provider);
             });
-
+           
             // ViewModels subscription
-            services.AddTransient<MainViewModel>(provider =>
+            services.AddTransient(provider =>
             {
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
                 return new MainViewModel(navigationService);
             });
-            services.AddTransient<LoginViewModel>(provider =>
+            services.AddTransient(provider =>
             {
-                RequestService_FE requestService = provider.GetRequiredService<RequestService_FE>();
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
 
                 return new LoginViewModel(requestService, navigationService);

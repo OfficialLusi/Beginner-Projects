@@ -1,5 +1,7 @@
 ﻿using BloggingPlatform_FE.ViewModels;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace BloggingPlatform_FE.Views
 {
@@ -8,11 +10,34 @@ namespace BloggingPlatform_FE.Views
     /// </summary>
     public partial class LoginSignupDialogView : Window
     {
+        private string _chosenOption;
+
+        public string ChosenOption
+        {
+            get => _chosenOption;
+            set => _chosenOption = value;
+        }
+
         public LoginSignupDialogView(LoginSignupDialogViewModel viewModel)
         {
             InitializeComponent();
             DataContext = viewModel;
         }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e) 
+        {
+            ChosenOption = "Login";
+            DialogResult = true;
+            Close();
+        }
+
+        private void SignupButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChosenOption = "Signup";
+            DialogResult = true;
+            Close();
+        }
+
     }
 }
 

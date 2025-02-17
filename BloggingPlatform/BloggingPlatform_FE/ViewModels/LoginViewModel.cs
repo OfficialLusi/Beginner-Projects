@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Reflection.Metadata;
+using System.Windows.Controls;
 using System.Windows.Input;
 using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Models;
@@ -13,12 +15,11 @@ namespace BloggingPlatform_FE.ViewModels;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private string _email;
-    private string _password;
-    private RequestService_FE _requestService;
+    private IRequestService_FE _requestService;
     private INavigationService _navigationService;
 
 
-    public LoginViewModel(RequestService_FE requestService, INavigationService navigationService)
+    public LoginViewModel(IRequestService_FE requestService, INavigationService navigationService)
     {
         #region initialize checks
         InitializeChecks.InitialCheck(requestService, "Request service cannot be null");
@@ -28,7 +29,7 @@ public class LoginViewModel : INotifyPropertyChanged
         _requestService = requestService;
         _navigationService = navigationService;
 
-        LoginCommand = new RelayCommand(async () => await UserLogin());
+        LoginCommand = new RelayCommand<object>(async (param) => await UserLogin(param), (param) => true);
         //NavigateToSignupCommand = new RelayCommand(async () => await UserSignup());
     }
 
@@ -42,27 +43,23 @@ public class LoginViewModel : INotifyPropertyChanged
         }
     }
 
-    public string Password
-    {
-        get => _password;
-        set
-        {
-            _password = value;
-            OnPropertyChanged(nameof(Password));
-        }
-    }
-
     public ICommand LoginCommand { get; }
     //public ICommand NavigateToSignupCommand { get; }
 
     #region private methods
 
-    public async Task UserLogin()
+    public async Task UserLogin(object parameter)
     {
+        string password = string.Empty;
+        if (parameter is PasswordBox pb)
+        {
+            password = pb.Password;
+        }
+
         UserDto user = new UserDto
         {
             UserEmail = _email,
-            UserPassword = _password
+            UserPassword = password
         };
 
         ApiResponse<UserDto> data = await _requestService.AuthenticateUser(user);

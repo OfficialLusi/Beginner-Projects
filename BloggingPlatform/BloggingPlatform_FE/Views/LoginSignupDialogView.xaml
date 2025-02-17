@@ -9,8 +9,8 @@
     <Grid Margin="20">
         <StackPanel Margin="230,120,230,120">
             <TextBlock Text="Welcome to blogging platform" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Center"/>
-            <Button x:Name="LoginButton" Content="Login" Command="{Binding LoginButton}" Height="30" Width="100" Margin="0,10"/>
-            <Button x:Name="SignupButton" Content="Signup" Command="{Binding SignupButton}" Height="30" Width="100" Margin="0,10"/>
+            <Button x:Name="LoginButton" Content="Login" Click="LoginButton_Click" Height="30" Width="100" Margin="0,10"/>
+            <Button x:Name="SignupButton" Content="Signup" Click="SignupButton_Click" Height="30" Width="100" Margin="0,10"/>
         </StackPanel>
     </Grid>
 </Window>

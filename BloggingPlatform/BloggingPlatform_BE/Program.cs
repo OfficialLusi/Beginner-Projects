@@ -8,11 +8,13 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-
+        // 1. crate builder
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+        // 2. adding configuration
         ConfigurationManager configuration = builder.Configuration;
 
+        // 3. getting dir and paths from config
         #region sqlite db handling
         string baseDir = Directory.GetCurrentDirectory();
         string dbName = configuration["DatabaseName"];
@@ -20,12 +22,14 @@ internal class Program
         string connectionString = configuration.GetConnectionString("DBConnection");
         #endregion
 
+        // 4. adding logging
         builder.Services.AddLogging(configure =>
         {
             configure.AddConsole();
             configure.SetMinimumLevel(LogLevel.Information);
         });
 
+        // 5. adding services
         builder.Services.AddSingleton<IRepositoryService>(provider =>
         {
             // Getting logger from di container
@@ -58,8 +62,10 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // 6. build application
         WebApplication app = builder.Build();
 
+        // 7. creating db if not exists
         // handling creating database at the start of the application
         using (IServiceScope scope = app.Services.CreateScope())
         {

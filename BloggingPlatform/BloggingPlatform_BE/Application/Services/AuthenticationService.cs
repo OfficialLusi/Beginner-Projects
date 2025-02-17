@@ -23,13 +23,6 @@ public class AuthenticationService : IAuthenticationService
     #endregion
 
     #region public methods
-    public List<byte[]> CreateHash(string password)
-    {
-        byte[] salt = HashCrypting.GenerateSalt();
-        byte[] hash = HashCrypting.HashPassword(password, salt);
-
-        return [salt, hash];
-    }
 
     public UserDto? AuthenticateUser(UserDto user)
     {
@@ -47,6 +40,13 @@ public class AuthenticationService : IAuthenticationService
         return null;
     }
 
+    public List<byte[]> CreateHash(string password)
+    {
+        byte[] salt = HashCrypting.GenerateSalt();
+        byte[] hash = HashCrypting.HashPassword(password, salt);
+
+        return [salt, hash];
+    }
     public bool IsPasswordChanged(UserDto user)
     {
         UserDto oldUser = _repositoryService.GetUserByGuid(user.UserGuid);
