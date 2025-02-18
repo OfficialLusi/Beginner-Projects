@@ -6,9 +6,31 @@
         xmlns:local="clr-namespace:BloggingPlatform_FE.Views"
         mc:Ignorable="d"
         Title="HomeView" Height="450" Width="800">
-    <Grid Margin="170,100,170,100" Background="AliceBlue">
-        <StackPanel>
-            <TextBlock Text="Home page, login eseguito" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        </StackPanel>
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            
+        </Grid>
+        
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                
+            </Grid>
+
+            <Grid Grid.Row="1">
+                
+            </Grid>
+            
+        </Grid>
+
     </Grid>
 </Page>
