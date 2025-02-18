@@ -73,6 +73,7 @@ namespace BloggingPlatform_FE
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
                 return new MainViewModel(navigationService);
             });
+
             services.AddTransient(provider =>
             {
                 IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
@@ -80,14 +81,24 @@ namespace BloggingPlatform_FE
 
                 return new LoginViewModel(requestService, navigationService);
             });
-            services.AddTransient<SignupViewModel>();
+
+            services.AddTransient(provider =>
+            {
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
+                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                ILogger<SignupViewModel> logger = provider.GetRequiredService<ILogger<SignupViewModel>>();
+                return new SignupViewModel(requestService, navigationService, logger);
+            });
+
             services.AddTransient<HomeViewModel>();
             services.AddTransient<PersonalPostViewModel>();
             services.AddTransient<WritePostViewModel>();
             services.AddTransient<LoginSignupDialogViewModel>();
 
             // Views subscription
-            services.AddTransient<MainWindow>();
+            // singleton main window
+            services.AddSingleton<MainWindow>();
+
             services.AddTransient<LoginView>();
             services.AddTransient<SignupView>();
             services.AddTransient<HomeView>();

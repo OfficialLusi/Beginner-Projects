@@ -7,21 +7,21 @@
         xmlns:viewmodels="clr-namespace:BloggingPlatform_FE.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
         mc:Ignorable="d"
         Title="Login">
-    <Grid Margin="150,100,150,100" Background="AliceBlue">
+    <Grid Margin="170,100,170,100" Background="AliceBlue">
         <StackPanel VerticalAlignment="Center" Margin="100,0,100,0">
             <TextBlock Text="Insert you credentials" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Center"/>
             
             <!--Email and password "binding"-->
-            <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Width="250"/>
-            <PasswordBox x:Name="Password"   Margin="0,0,0,10" Width="250"/>
+            <TextBox Text="{Binding UserInfo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Width="150"/>
+            <PasswordBox x:Name="Password"   Margin="0,0,0,10" Width="150"/>
             
             <!--Login button-->
-            <Button Content="Login" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=PasswordBox}" Margin="0,10,0,5" Width="50"/>
+            <Button Content="Login" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=Password}" Margin="0,10,0,5" Width="50"/>
             
-            <!--<TextBlock Text="Or if you don't have an account:" FontSize="10" Margin="30,2,30,2" HorizontalAlignment="Center"/>-->
+            <TextBlock Text="Or if you don't have an account:" FontSize="10" Margin="30,2,30,2" HorizontalAlignment="Center"/>
             
             <!--Signup button-->
-            <!--<Button Content="Sign Up" Command="{Binding NavigateToSignupCommand}" Margin="0,5,0,0" Width="50"/>-->
+            <Button Content="Sign Up" Command="{Binding NavigateToSignupCommand}" Margin="0,5,0,5" Width="50"/>
             
         </StackPanel>
     </Grid>

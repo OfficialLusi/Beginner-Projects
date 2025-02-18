@@ -43,7 +43,7 @@
       },
       {
         "requestname": "AuthenticateUser",
-        "urlname": "https://localhost:30000/api/BloggingPlatform/AuthenticateUser"
+        "urlname": "https://localhost:30000/api/Authentication/AuthenticateUser"
       }
     ]
   }

@@ -1,20 +1,18 @@
 ﻿using System.ComponentModel;
-using System.Reflection.Metadata;
+using System.Net;
 using System.Windows.Controls;
 using System.Windows.Input;
 using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Models;
-using BloggingPlatform_FE.Services;
 using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
-using Microsoft.AspNetCore.Http;
 
 namespace BloggingPlatform_FE.ViewModels;
 
 public class LoginViewModel : INotifyPropertyChanged
 {
-    private string _email;
+    private string _userInfo;
     private IRequestService_FE _requestService;
     private INavigationService _navigationService;
 
@@ -30,41 +28,39 @@ public class LoginViewModel : INotifyPropertyChanged
         _navigationService = navigationService;
 
         LoginCommand = new RelayCommand<object>(async (param) => await UserLogin(param), (param) => true);
-        //NavigateToSignupCommand = new RelayCommand(async () => await UserSignup());
+        NavigateToSignupCommand = new RelayCommand(() => UserSignup());
     }
 
-    public string Email
+    public string UserInfo
     {
-        get => _email;
+        get => _userInfo;
         set
         {
-            _email = value;
-            OnPropertyChanged(nameof(Email));
+            _userInfo = value;
+            OnPropertyChanged(nameof(UserInfo));
         }
     }
 
     public ICommand LoginCommand { get; }
-    //public ICommand NavigateToSignupCommand { get; }
+    public ICommand NavigateToSignupCommand { get; }
 
     #region private methods
 
     public async Task UserLogin(object parameter)
     {
-        string password = string.Empty;
-        if (parameter is PasswordBox pb)
-        {
-            password = pb.Password;
-        }
+        UserDto user = new UserDto();
 
-        UserDto user = new UserDto
-        {
-            UserEmail = _email,
-            UserPassword = password
-        };
+        if (parameter is PasswordBox pb)
+            user.UserPassword = pb.Password;
+
+        if (_userInfo.Contains('@'))
+            user.UserEmail = _userInfo;
+        else
+            user.UserName = _userInfo;
 
         ApiResponse<UserDto> data = await _requestService.AuthenticateUser(user);
 
-        if (Convert.ToInt32(data.StatusCode) == StatusCodes.Status200OK)
+        if (data.StatusCode == HttpStatusCode.OK)
         {
             _navigationService.NavigateTo("Home");
             // eventually take the user here
@@ -76,10 +72,10 @@ public class LoginViewModel : INotifyPropertyChanged
     }
 
 
-    //public async Task UserSignup()
-    //{
-    //    _navigationService.NavigateTo("Signup");
-    //}
+    public async Task UserSignup()
+    {
+        _navigationService.NavigateTo("Signup");
+    }
 
     #endregion
 

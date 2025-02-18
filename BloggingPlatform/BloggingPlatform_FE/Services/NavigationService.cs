@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Views;
+using LusiUtilsLibrary.Backend.Initialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BloggingPlatform_FE.Services
@@ -12,13 +13,13 @@ namespace BloggingPlatform_FE.Services
 
         public NavigationService(IServiceProvider serviceProvider)
         {
+            #region Initial checks
+            InitializeChecks.InitialCheck(serviceProvider, "Service Provider cannot be null");
+            #endregion
+
             _serviceProvider = serviceProvider;
         }
 
-        private void OnInitialize()
-        {
-            _mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-        }
 
         public void NavigateTo(string viewName)
         {
@@ -30,7 +31,7 @@ namespace BloggingPlatform_FE.Services
             {
                 case "Home":
                     HomeView homeView = _serviceProvider.GetRequiredService<HomeView>();
-                    _mainWindow.MainFrame.Navigate(homeView);  
+                    _mainWindow.MainFrame.Navigate(homeView);
                     break;
                 case "Login":
                     LoginView loginView = _serviceProvider.GetRequiredService<LoginView>();
@@ -40,16 +41,19 @@ namespace BloggingPlatform_FE.Services
                     SignupView signupView = _serviceProvider.GetRequiredService<SignupView>();
                     _mainWindow.MainFrame.Navigate(signupView);
                     break;
-                //case "PersonalPosts":
-                //    PersonalPostView personalPostView = _serviceProvider.GetService<PersonalPostView>();
-                //    _mainWindow.MainFrame.Navigate(personalPostView);
-                //    break;
-                //case "WritePost":
-                //    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
-                //    _mainWindow.MainFrame.Navigate(writePostView);
-                //    break;
-
+                    //case "PersonalPosts":
+                    //    PersonalPostView personalPostView = _serviceProvider.GetService<PersonalPostView>();
+                    //    _mainWindow.MainFrame.Navigate(personalPostView);
+                    //    break;
+                    //case "WritePost":
+                    //    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
+                    //    _mainWindow.MainFrame.Navigate(writePostView);
+                    //    break;
             }
         }
+
+        #region Initialize
+        private void OnInitialize() => _mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        #endregion
     }
 }

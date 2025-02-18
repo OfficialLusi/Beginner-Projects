@@ -1,7 +1,5 @@
 ﻿using BloggingPlatform_FE.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 
 namespace BloggingPlatform_FE.Views
 {

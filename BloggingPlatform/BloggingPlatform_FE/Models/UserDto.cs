@@ -11,4 +11,6 @@ public class UserDto
     public string UserEmail { get; set; }
     public String UserPassword { get; set; } 
     public DateTime UserCreatedOn { get; set; }
+    public string Salt { get; set; } = string.Empty;
+    public string HashCode { get; set; } = string.Empty;
 }
