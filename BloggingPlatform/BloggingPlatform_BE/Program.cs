@@ -30,7 +30,7 @@ internal class Program
         });
 
         // 5. adding services
-        builder.Services.AddSingleton<IRepositoryService>(provider =>
+        builder.Services.AddSingleton<IRepositoryService, RepositoryService>(provider =>
         {
             // Getting logger from di container
             ILogger<IRepositoryService> repoLogger = provider.GetRequiredService<ILogger<IRepositoryService>>();
@@ -38,7 +38,7 @@ internal class Program
             return new RepositoryService(connectionString, dbName, repoLogger);
         });
 
-        builder.Services.AddTransient<IAuthenticationService>(provider =>
+        builder.Services.AddSingleton<IAuthenticationService, AuthenticationService>(provider =>
         {
             // Getting repository service from container
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();
@@ -46,7 +46,7 @@ internal class Program
             return new AuthenticationService(repositoryService);
         });
 
-        builder.Services.AddSingleton<IApplicationService>(provider =>
+        builder.Services.AddSingleton<IApplicationService, ApplicationService>(provider =>
         {
             // Getting dependencies from di container
             IRepositoryService repositoryService = provider.GetRequiredService<IRepositoryService>();

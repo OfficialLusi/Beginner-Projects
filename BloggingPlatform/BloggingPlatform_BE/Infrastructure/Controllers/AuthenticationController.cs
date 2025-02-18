@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_BE.Application.DTOs;
 using BloggingPlatform_BE.Application.Services;
+using BloggingPlatform_BE.Domain.Interfaces;
 using LusiUtilsLibrary.Backend.Initialization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,11 @@ namespace BloggingPlatform_BE.Infrastructure.Controllers
     {
         #region private fields
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly AuthenticationService _authService;
+        private readonly IAuthenticationService _authService;
         #endregion
 
         #region constructor
-        public AuthenticationController(ILogger<AuthenticationController> logger, AuthenticationService authService)
+        public AuthenticationController(ILogger<AuthenticationController> logger, IAuthenticationService authService)
         {
             #region initialize checks
             InitializeChecks.InitialCheck(logger, "Logger cannot be null");

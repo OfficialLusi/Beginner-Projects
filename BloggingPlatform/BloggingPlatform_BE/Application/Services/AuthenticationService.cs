@@ -31,9 +31,9 @@ public class AuthenticationService : IAuthenticationService
         if (user.UserName == "admin")
             return users.FirstOrDefault(x => x.UserName == "admin");
 
-        if(users.Any(x => x.UserEmail == user.UserEmail))
+        if(users.Any(x => x.UserEmail == user.UserEmail || x.UserName == user.UserName))
         {
-            UserDto repoUser = users.FirstOrDefault(x => x.UserEmail == user.UserEmail);
+            UserDto repoUser = users.FirstOrDefault(x => x.UserEmail == user.UserEmail || x.UserName == user.UserName);
             if(Convert.FromBase64String(repoUser.HashCode).SequenceEqual(HashCrypting.CheckHash(user.UserPassword, Convert.FromBase64String(repoUser.Salt))))
                 return repoUser;
         }
