@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace BloggingPlatform_FE.Models;
+﻿namespace BloggingPlatform_FE.Models;
 
 public class UserDto
 {
