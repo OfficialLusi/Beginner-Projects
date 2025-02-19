@@ -13,19 +13,22 @@ namespace BloggingPlatform_FE.ViewModels;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private string _userInfo;
-    private IRequestService_FE _requestService;
-    private INavigationService _navigationService;
+    private readonly IRequestService_FE _requestService;
+    private readonly INavigationService _navigationService;
+    private readonly IMemoryService _memoryService;
 
 
-    public LoginViewModel(IRequestService_FE requestService, INavigationService navigationService)
+    public LoginViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService)
     {
         #region initialize checks
         InitializeChecks.InitialCheck(requestService, "Request service cannot be null");
         InitializeChecks.InitialCheck(navigationService, "Navigation service cannot be null");
+        InitializeChecks.InitialCheck(memoryService, "Memory service cannot be null");
         #endregion
 
         _requestService = requestService;
         _navigationService = navigationService;
+        _memoryService = memoryService;
 
         LoginCommand = new RelayCommand<object>(async (param) => await UserLogin(param), (param) => true);
         NavigateToSignupCommand = new RelayCommand(() => UserSignup());
@@ -63,7 +66,7 @@ public class LoginViewModel : INotifyPropertyChanged
         if (data.StatusCode == HttpStatusCode.OK)
         {
             _navigationService.NavigateTo("Home");
-            // eventually take the user here
+            _memoryService.SetCurrentUser(data.Data);
             return;
         }
 

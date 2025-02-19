@@ -41,14 +41,14 @@ namespace BloggingPlatform_FE.Services
                     SignupView signupView = _serviceProvider.GetRequiredService<SignupView>();
                     _mainWindow.MainFrame.Navigate(signupView);
                     break;
-                    //case "PersonalPosts":
-                    //    PersonalPostView personalPostView = _serviceProvider.GetService<PersonalPostView>();
-                    //    _mainWindow.MainFrame.Navigate(personalPostView);
-                    //    break;
-                    //case "WritePost":
-                    //    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
-                    //    _mainWindow.MainFrame.Navigate(writePostView);
-                    //    break;
+                case "PersonalPosts":
+                    PersonalPostView personalPostView = _serviceProvider.GetService<PersonalPostView>();
+                    _mainWindow.MainFrame.Navigate(personalPostView);
+                    break;
+                //case "WritePost":
+                //    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
+                //    _mainWindow.MainFrame.Navigate(writePostView);
+                //    break;
             }
         }
 

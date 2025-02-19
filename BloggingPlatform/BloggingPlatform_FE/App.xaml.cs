@@ -30,26 +30,40 @@ namespace BloggingPlatform_FE
             mainWindow.Show();
         }
 
-        private void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services)
         {
-            string workingDirectory = Environment.CurrentDirectory;
-            string requestFileName = "\\communicationsettings.json";
-            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName + requestFileName;
+            // Logging subscription
+            AddLogging(services);
 
-            // logging subscription
+            // Core Services subscription
+            AddCoreServices(services);
+
+            // ViewModels subscription
+            AddViewModels(services);
+
+            // Views subscription
+            AddViews(services);
+        }
+
+        private static void AddLogging(IServiceCollection services)
+        {
             services.AddLogging(configure =>
             {
                 configure.AddConsole();
                 configure.SetMinimumLevel(LogLevel.Information);
             });
+        }
 
+        private static void AddCoreServices(IServiceCollection services)
+        {
             // services subscription
-
             // rest service from library
+            string workingDirectory = Environment.CurrentDirectory;
+            string requestFileName = "\\communicationsettings.json";
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName + requestFileName;
             services.AddSingleton<IREST_RequestService, REST_RequestService>(provider =>
             {
                 ILogger<REST_RequestService> logger = provider.GetRequiredService<ILogger<REST_RequestService>>();
-
                 return new REST_RequestService(logger, projectDirectory);
             });
 
@@ -66,20 +80,21 @@ namespace BloggingPlatform_FE
             {
                 return new NavigationService(provider);
             });
-           
-            // ViewModels subscription
-            services.AddTransient(provider =>
-            {
-                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
-                return new MainViewModel(navigationService);
-            });
+
+            // memory service
+            services.AddSingleton<IMemoryService, MemoryService>();
+        }
+
+        private static void AddViewModels(IServiceCollection services)
+        {
+            services.AddTransient<MainViewModel>();
 
             services.AddTransient(provider =>
             {
                 IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
-
-                return new LoginViewModel(requestService, navigationService);
+                IMemoryService memoryService = provider.GetRequiredService<IMemoryService>();
+                return new LoginViewModel(requestService, navigationService, memoryService);
             });
 
             services.AddTransient(provider =>
@@ -90,20 +105,38 @@ namespace BloggingPlatform_FE
                 return new SignupViewModel(requestService, navigationService, logger);
             });
 
-            services.AddTransient<HomeViewModel>();
-            services.AddTransient<PersonalPostViewModel>();
+            services.AddTransient(provider =>
+            {
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
+                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                ILogger<HomeViewModel> logger = provider.GetRequiredService<ILogger<HomeViewModel>>();
+                return new HomeViewModel(requestService, navigationService, logger);
+            });
+
+            services.AddTransient(provider =>
+            {
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
+                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                IMemoryService memoryService = provider.GetRequiredService<IMemoryService>();
+                ILogger<PersonalPostViewModel> logger = provider.GetRequiredService<ILogger<PersonalPostViewModel>>();
+                return new PersonalPostViewModel(requestService, navigationService, memoryService, logger);
+            });
+
             services.AddTransient<WritePostViewModel>();
             services.AddTransient<LoginSignupDialogViewModel>();
+        }
 
-            // Views subscription
-            // singleton main window
+        private static void AddViews(IServiceCollection services)
+        {
             services.AddSingleton<MainWindow>();
 
             services.AddTransient<LoginView>();
             services.AddTransient<SignupView>();
             services.AddTransient<HomeView>();
             services.AddTransient<LoginSignupDialogView>();
+            services.AddTransient<PersonalPostView>();
         }
+
     }
 
 }

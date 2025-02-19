@@ -9,5 +9,5 @@ public class BlogPostDto
     public string PostContent { get; set; } = string.Empty;
     public string PostTags { get; set; } = string.Empty;
     public DateTime PostCreatedOn { get; set; }
-    public DateTime PostModifiedOn { get; set; } 
+    public DateTime PostModifiedOn { get; set; } = DateTime.MinValue;
 }
