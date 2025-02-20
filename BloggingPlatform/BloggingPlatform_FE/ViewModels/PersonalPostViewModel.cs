@@ -100,7 +100,7 @@ public class PersonalPostViewModel : INotifyPropertyChanged
 
         if (data.StatusCode == System.Net.HttpStatusCode.OK && data.Data != null)
         {
-            _logger.LogInformation("HomeViewModel - Correctly received list of all blog posts");
+            _logger.LogInformation("PersonalPostViewModel - Correctly received list of all blog posts");
             foreach (var post in data.Data)
             {
                 if(post.UserId == currentUserId)

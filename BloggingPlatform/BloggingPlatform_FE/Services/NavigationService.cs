@@ -45,10 +45,10 @@ namespace BloggingPlatform_FE.Services
                     PersonalPostView personalPostView = _serviceProvider.GetService<PersonalPostView>();
                     _mainWindow.MainFrame.Navigate(personalPostView);
                     break;
-                //case "WritePost":
-                //    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
-                //    _mainWindow.MainFrame.Navigate(writePostView);
-                //    break;
+                case "WritePost":
+                    WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
+                    _mainWindow.MainFrame.Navigate(writePostView);
+                    break;
             }
         }
 

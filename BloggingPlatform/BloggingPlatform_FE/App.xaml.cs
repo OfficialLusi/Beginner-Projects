@@ -122,7 +122,15 @@ namespace BloggingPlatform_FE
                 return new PersonalPostViewModel(requestService, navigationService, memoryService, logger);
             });
 
-            services.AddTransient<WritePostViewModel>();
+            services.AddTransient(provider =>
+            {
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
+                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                IMemoryService memoryService = provider.GetRequiredService<IMemoryService>();
+                ILogger<WritePostViewModel> logger = provider.GetRequiredService<ILogger<WritePostViewModel>>();
+                return new WritePostViewModel(requestService, navigationService, memoryService, logger);
+            });
+
             services.AddTransient<LoginSignupDialogViewModel>();
         }
 
@@ -135,6 +143,7 @@ namespace BloggingPlatform_FE
             services.AddTransient<HomeView>();
             services.AddTransient<LoginSignupDialogView>();
             services.AddTransient<PersonalPostView>();
+            services.AddTransient<WritePostView>();
         }
 
     }

@@ -45,7 +45,7 @@
                     </Grid>
 
                     <Grid Grid.Column="1">
-                        <TextBox Text="{Binding SearchedWord, UpdateSourceTrigger=PropertyChanged}" Margin="0,10,2,10"></TextBox>
+                        <TextBox Text="{Binding SearchedWord, UpdateSourceTrigger=PropertyChanged}" FontSize="15" VerticalAlignment="Center" Margin="0,10,2,10"></TextBox>
                     </Grid>
 
                     <Grid Grid.Column="2">
