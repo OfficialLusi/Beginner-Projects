@@ -83,6 +83,9 @@ namespace BloggingPlatform_FE
 
             // memory service
             services.AddSingleton<IMemoryService, MemoryService>();
+
+            // compare service
+            services.AddTransient<CompareService>();
         }
 
         private static void AddViewModels(IServiceCollection services)
@@ -109,8 +112,9 @@ namespace BloggingPlatform_FE
             {
                 IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                CompareService compareService = provider.GetRequiredService<CompareService>();
                 ILogger<HomeViewModel> logger = provider.GetRequiredService<ILogger<HomeViewModel>>();
-                return new HomeViewModel(requestService, navigationService, logger);
+                return new HomeViewModel(requestService, navigationService, compareService, logger);
             });
 
             services.AddTransient(provider =>
@@ -118,8 +122,9 @@ namespace BloggingPlatform_FE
                 IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
                 INavigationService navigationService = provider.GetRequiredService<INavigationService>();
                 IMemoryService memoryService = provider.GetRequiredService<IMemoryService>();
+                CompareService compareService = provider.GetRequiredService<CompareService>();
                 ILogger<PersonalPostViewModel> logger = provider.GetRequiredService<ILogger<PersonalPostViewModel>>();
-                return new PersonalPostViewModel(requestService, navigationService, memoryService, logger);
+                return new PersonalPostViewModel(requestService, navigationService, memoryService, compareService, logger);
             });
 
             services.AddTransient(provider =>

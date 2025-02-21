@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
+using System.Collections;
+using BloggingPlatform_FE.Services;
 
 namespace BloggingPlatform_FE.ViewModels;
 
@@ -14,18 +16,21 @@ public class HomeViewModel : INotifyPropertyChanged
 {
     private readonly IRequestService_FE _requestService;
     private readonly INavigationService _navigationService;
+    private readonly CompareService _compareService;
     private readonly ILogger<HomeViewModel> _logger;
 
     private string _searchedWord;
 
-    public HomeViewModel(IRequestService_FE requestService, INavigationService navigationService, ILogger<HomeViewModel> logger)
+    public HomeViewModel(IRequestService_FE requestService, INavigationService navigationService, CompareService compareService, ILogger<HomeViewModel> logger)
     {
         InitializeChecks.InitialCheck(requestService, "Request Service cannot be null");
         InitializeChecks.InitialCheck(navigationService, "Navigation Service cannot be null");
+        InitializeChecks.InitialCheck(compareService, "Compare Service cannot be null");
         InitializeChecks.InitialCheck(logger, "Logger cannot be null");
 
         _requestService = requestService;
         _navigationService = navigationService;
+        _compareService = compareService;
         _logger = logger;
 
         HomeButton = new RelayCommand(async () => await GoToHome());
@@ -54,6 +59,7 @@ public class HomeViewModel : INotifyPropertyChanged
     public ICommand SearchButton { get; }
 
     public ObservableCollection<BlogPostDto> BlogPosts { get; set; } = new ObservableCollection<BlogPostDto>();
+    private List<BlogPostDto> SortedBlogPosts { get; set; } = new List<BlogPostDto>();
 
 
     private async Task GoToHome() => _navigationService.NavigateTo("Home");
@@ -73,14 +79,19 @@ public class HomeViewModel : INotifyPropertyChanged
         }
 
         BlogPosts.Clear();
+        SortedBlogPosts.Clear();
 
         ApiResponse<List<BlogPostDto>> data = await _requestService.GetAllBlogPosts();
         
         foreach (BlogPostDto blogPostDto in data.Data)
         {
             if (blogPostDto.PostTags.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase) || blogPostDto.PostTitle.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase))
-                BlogPosts.Add(blogPostDto);
+                SortedBlogPosts.Add(blogPostDto);
         }
+
+        // sort by the date (showing the recent ones) 
+        SortedBlogPosts.Sort(_compareService);
+        BlogPosts = new(SortedBlogPosts);
     }
 
     private async Task ShowAllPosts()
@@ -93,8 +104,12 @@ public class HomeViewModel : INotifyPropertyChanged
             BlogPosts.Clear();
             foreach (var post in data.Data)
             {
-                BlogPosts.Add(post);
+                SortedBlogPosts.Add(post);
             }
+
+            // sort by the date (showing the recent ones) 
+            SortedBlogPosts.Sort(_compareService);
+            BlogPosts = new(SortedBlogPosts);
         }
     }
 

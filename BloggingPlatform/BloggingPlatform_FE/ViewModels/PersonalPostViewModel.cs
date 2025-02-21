@@ -1,5 +1,6 @@
 ﻿using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Models;
+using BloggingPlatform_FE.Services;
 using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
@@ -15,27 +16,33 @@ public class PersonalPostViewModel : INotifyPropertyChanged
     private readonly IRequestService_FE _requestService;
     private readonly INavigationService _navigationService;
     private readonly IMemoryService _memoryService;
+    private readonly CompareService _compareService;
     private readonly ILogger<PersonalPostViewModel> _logger;
 
     private string _searchedWord;
 
-    public PersonalPostViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService, ILogger<PersonalPostViewModel> logger)
+    public PersonalPostViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService, CompareService compareService, ILogger<PersonalPostViewModel> logger)
     {
         InitializeChecks.InitialCheck(requestService, "Request Service cannot be null");
         InitializeChecks.InitialCheck(navigationService, "Navigation Service cannot be null");
         InitializeChecks.InitialCheck(memoryService, "Memory Service cannot be null");
+        InitializeChecks.InitialCheck(compareService, "Compare Service cannot be null");
         InitializeChecks.InitialCheck(logger, "Logger cannot be null");
 
         _requestService = requestService;
         _navigationService = navigationService;
         _memoryService = memoryService;
+        _compareService = compareService;
         _logger = logger;
 
-        HomeButton = new RelayCommand(async () => await GoToHome());
-        WritePostButton = new RelayCommand(async () => await GoToWritePost());
-        SeeMyPostButton = new RelayCommand(async () => await GoToSeeMyPosts());
-        ExitButton = new RelayCommand(async () => await Exit());
-        SearchButton = new RelayCommand(async () => await Search());
+        HomeButton = new RelayCommand(GoToHome);
+        WritePostButton = new RelayCommand(GoToWritePost);
+        SeeMyPostButton = new RelayCommand(GoToSeeMyPosts);
+        ExitButton = new RelayCommand(Exit);
+        SearchButton = new RelayCommand(Search);
+
+        EditButton = new RelayCommand(Edit);
+        DeleteButton = new RelayCommand(Delete);
 
         ShowMyAllPosts();
     }
@@ -56,7 +63,12 @@ public class PersonalPostViewModel : INotifyPropertyChanged
     public ICommand ExitButton { get; }
     public ICommand SearchButton { get; }
 
+    // todo to implement
+    public ICommand EditButton { get; }
+    public ICommand DeleteButton { get; }
+
     public ObservableCollection<BlogPostDto> BlogPosts { get; set; } = new ObservableCollection<BlogPostDto>();
+    private List<BlogPostDto> SortedBlogPosts { get; set; } = new List<BlogPostDto>();
 
 
     private async Task GoToHome() => _navigationService.NavigateTo("Home");
@@ -104,9 +116,22 @@ public class PersonalPostViewModel : INotifyPropertyChanged
             foreach (var post in data.Data)
             {
                 if(post.UserId == currentUserId)
-                    BlogPosts.Add(post);
+                    SortedBlogPosts.Add(post);
             }
+
+            SortedBlogPosts.Sort(_compareService);
+            BlogPosts = new(SortedBlogPosts);
         }
+    }
+
+    private async Task Edit()
+    {
+
+    }
+
+    private async Task Delete()
+    {
+
     }
 
     #region INotifyPropertyChanged Members
