@@ -13,6 +13,8 @@ namespace BloggingPlatform_FE.ViewModels;
 public class LoginViewModel : INotifyPropertyChanged
 {
     private string _userInfo;
+    private string _wrongCredentials;
+
     private readonly IRequestService_FE _requestService;
     private readonly INavigationService _navigationService;
     private readonly IMemoryService _memoryService;
@@ -32,6 +34,12 @@ public class LoginViewModel : INotifyPropertyChanged
 
         LoginCommand = new RelayCommand<object>(async (param) => await UserLogin(param), (param) => true);
         NavigateToSignupCommand = new RelayCommand(() => UserSignup());
+
+        if (!_memoryService.GetFirstLogin())
+        {
+            WrongCredentials = "Wrong Credentials";
+            OnPropertyChanged(nameof(WrongCredentials));
+        }
     }
 
     public string UserInfo
@@ -41,6 +49,15 @@ public class LoginViewModel : INotifyPropertyChanged
         {
             _userInfo = value;
             OnPropertyChanged(nameof(UserInfo));
+        }
+    }
+    public string WrongCredentials
+    {
+        get => _wrongCredentials;
+        set
+        {
+            _wrongCredentials = value;
+            OnPropertyChanged(nameof(WrongCredentials));
         }
     }
 
@@ -67,11 +84,12 @@ public class LoginViewModel : INotifyPropertyChanged
         {
             _navigationService.NavigateTo("Home");
             _memoryService.SetCurrentUser(data.Data);
-            return;
         }
-
-        // todo: call here the login error pupup.
-
+        else
+        {
+            _memoryService.SetFirstLoginFalse();
+            _navigationService.NavigateTo("Login");
+        }
     }
 
 

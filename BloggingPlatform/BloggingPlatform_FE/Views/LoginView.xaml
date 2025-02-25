@@ -9,7 +9,9 @@
         Title="Login">
     <Grid Margin="170,100,170,100" Background="AliceBlue">
         <StackPanel VerticalAlignment="Center" Margin="100,0,100,0">
-            <TextBlock Text="Insert you credentials" FontSize="16" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+            <TextBlock Text="Insert you credentials" FontSize="16" Margin="0" HorizontalAlignment="Center"/>
+
+            <TextBlock Text="{Binding WrongCredentials}" FontSize="12" Margin="10" HorizontalAlignment="Center"></TextBlock>
             
             <!--Email and password "binding"-->
             <TextBox Text="{Binding UserInfo, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" Width="150"/>

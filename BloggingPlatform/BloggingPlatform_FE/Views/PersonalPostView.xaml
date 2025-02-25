@@ -63,37 +63,69 @@
                             <DataTemplate>
                                 <WrapPanel>
                                     <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                            <RowDefinition Height="*"></RowDefinition>
-                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="550"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
 
-                                        <Grid Grid.Row="0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="400"></ColumnDefinition>
-                                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                            </Grid.ColumnDefinitions>
+                                        <Grid Grid.Column="0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                            </Grid.RowDefinitions>
 
-                                            <Grid Grid.Column="0">
-                                                <StackPanel>
-                                                    <TextBlock Text="Title: " />
-                                                    <TextBlock Text="{Binding PostTitle}" FontWeight="Bold" />
-                                                </StackPanel>
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="400"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid Grid.Column="0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Title: " />
+                                                        <TextBlock Text="{Binding PostTitle}" FontWeight="Bold" />
+                                                    </StackPanel>
+                                                </Grid>
+
+                                                <Grid Grid.Column="1">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Posted On: " />
+                                                        <TextBlock Text="{Binding PostCreatedOn}" FontWeight="Bold" />
+                                                    </StackPanel>
+                                                </Grid>
                                             </Grid>
 
-                                            <Grid Grid.Column="1">
+                                            <Grid Grid.Row="1">
                                                 <StackPanel>
-                                                    <TextBlock Text="Posted On: " />
-                                                    <TextBlock Text="{Binding PostCreatedOn}" FontWeight="Bold" />
+                                                    <TextBlock Text="Content: " />
+                                                    <TextBlock Text="{Binding PostContent}" FontWeight="Bold" />
                                                 </StackPanel>
                                             </Grid>
                                         </Grid>
 
-                                        <Grid Grid.Row="1">
-                                            <StackPanel>
-                                                <TextBlock Text="Content: " />
-                                                <TextBlock Text="{Binding PostContent}" FontWeight="Bold" />
-                                            </StackPanel>
+                                        <Grid Grid.Column="1" HorizontalAlignment="Right">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                            </Grid.RowDefinitions>
+
+                                            <Grid Grid.Row="0">
+                                                <Button Content="Edit" 
+                                                        Command="{Binding DataContext.EditButton, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                        CommandParameter="{Binding .}"
+                                                        HorizontalAlignment="Center" 
+                                                        VerticalAlignment="Center" 
+                                                        Width="40"></Button>
+                                            </Grid>
+                                            <Grid Grid.Row="1">
+                                                <Button Content="Delete" 
+                                                        Command="{Binding DataContext.DeleteButton, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                        CommandParameter="{Binding .}"
+                                                        HorizontalAlignment="Center" 
+                                                        VerticalAlignment="Center" 
+                                                        Width="40">
+                                                </Button>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
                                 </WrapPanel>

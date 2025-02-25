@@ -28,7 +28,7 @@ public interface IRequestService_FE
     /// </summary>
     /// <param name="userGuid">guid of the user that has to be deleted</param>
     /// <exception cref="Exception">catch exception if call fails and rethrows it</exception>
-    public void DeleteUser(Guid userGuid);
+    public Task DeleteUser(Guid userGuid);
 
     /// <summary>
     /// Execute request to get a user from his guid
@@ -70,7 +70,7 @@ public interface IRequestService_FE
     /// </summary>
     /// <param name="blogPostGuid">guid of the user to delete</param>
     /// <exception cref="Exception">catch exception if call fails and rethrows it</exception>
-    public void DeleteBlogPost(Guid blogPostGuid);
+    public Task DeleteBlogPost(Guid blogPostGuid);
 
     /// <summary>
     /// Execute request to get a blog post from a guid

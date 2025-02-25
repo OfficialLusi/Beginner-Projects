@@ -49,6 +49,10 @@ namespace BloggingPlatform_FE.Services
                     WritePostView writePostView = _serviceProvider.GetService<WritePostView>();
                     _mainWindow.MainFrame.Navigate(writePostView);
                     break;
+                case "EditPost":
+                    EditPostView editPostView = _serviceProvider.GetService<EditPostView>();
+                    _mainWindow.MainFrame.Navigate(editPostView);
+                    break;
             }
         }
 

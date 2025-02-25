@@ -1,26 +1,31 @@
-﻿using BloggingPlatform_FE.Models;
-using BloggingPlatform_FE.Interfaces;
+﻿using BloggingPlatform_FE.Interfaces;
+using BloggingPlatform_FE.Models;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace BloggingPlatform_FE.ViewModels;
 
-public class WritePostViewModel : INotifyPropertyChanged
+public class EditPostViewModel
 {
     private readonly IRequestService_FE _requestService;
     private readonly INavigationService _navigationService;
     private readonly IMemoryService _memoryService;
-    private readonly ILogger<WritePostViewModel> _logger;
+    private readonly ILogger<EditPostViewModel> _logger;
 
     private string _postTitle;
     private string _postContent;
     private string _postTags;
     private string _errorText;
 
-    public WritePostViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService, ILogger<WritePostViewModel> logger)
+    public EditPostViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService, ILogger<EditPostViewModel> logger)
     {
         InitializeChecks.InitialCheck(requestService, "Request Service cannot be null");
         InitializeChecks.InitialCheck(navigationService, "Navigation Service cannot be null");
@@ -32,11 +37,11 @@ public class WritePostViewModel : INotifyPropertyChanged
         _memoryService = memoryService;
         _logger = logger;
 
-        HomeButton = new RelayCommand(async () => await GoToHome());
-        WritePostButton = new RelayCommand(async () => await GoToWritePost());
-        SeeMyPostButton = new RelayCommand(async () => await GoToSeeMyPosts());
-        ExitButton = new RelayCommand(async () => await Exit());
-        InsertPostButton = new RelayCommand(async () => await Insert());
+        HomeButton = new RelayCommand(GoToHome);
+        WritePostButton = new RelayCommand(GoToWritePost);
+        SeeMyPostButton = new RelayCommand(GoToSeeMyPosts);
+        ExitButton = new RelayCommand(Exit);
+        EditPostButton = new RelayCommand(Edit);
     }
 
     public string PostTitle
@@ -81,7 +86,7 @@ public class WritePostViewModel : INotifyPropertyChanged
     public ICommand WritePostButton { get; }
     public ICommand SeeMyPostButton { get; }
     public ICommand ExitButton { get; }
-    public ICommand InsertPostButton { get; }
+    public ICommand EditPostButton { get; }
 
     private async Task GoToHome() => _navigationService.NavigateTo("Home");
 
@@ -91,32 +96,35 @@ public class WritePostViewModel : INotifyPropertyChanged
 
     private async Task Exit() => App.Current.Shutdown();
 
-    
-    private async Task Insert()
+
+    private async Task Edit()
     {
         int currentUserId = _memoryService.GetCurrentUser().UserId;
 
-        if(_postTitle == string.Empty && _postContent == string.Empty && _postTags == string.Empty)
+        BlogPostDto postToEdit = _memoryService.GetCurrentPost();
+
+        // todo continuare qua
+
+        //_postTitle = postToEdit.PostTitle;
+        //_postContent = postToEdit.PostContent;
+        //_postTags = postToEdit.PostTags;
+
+        if (_postTitle == string.Empty && _postContent == string.Empty && _postTags == string.Empty)
         {
-            _logger.LogError("WritePostViewModel - Title, content or tags are empty");
-            ErrorText = "Post not added - title, content or tags are empty";
+            _logger.LogError("EditPostViewModel - Title, content or tags are empty");
+            ErrorText = "Post not updated - title, content or tags are empty";
             return;
         }
 
 
         BlogPostDto newBlogPost = new BlogPostDto()
         {
-            UserId = currentUserId,
-            PostGuid = Guid.NewGuid(),
-            PostTitle = _postTitle,
-            PostContent = _postContent,
-            PostTags = _postTags,
-            PostCreatedOn = DateTime.UtcNow
+            // passing the new data
         };
 
         _requestService.AddBlogPost(newBlogPost);
 
-        _logger.LogInformation("WritePostViewModel - blog post added succesfully, navigating to home page");
+        _logger.LogInformation("EditPostViewModel - blog post updated succesfully, navigating to home page");
 
         _navigationService.NavigateTo("Home");
     }
@@ -127,4 +135,5 @@ public class WritePostViewModel : INotifyPropertyChanged
     protected void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
     #endregion
+
 }

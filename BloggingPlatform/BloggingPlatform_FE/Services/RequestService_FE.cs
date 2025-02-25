@@ -23,7 +23,7 @@ public class RequestService_FE : IRequestService_FE
     }
 
     #region User
-    
+
     public async Task<ApiResponse<UserDto>> AddUser(UserDto user)
     {
         try
@@ -52,12 +52,16 @@ public class RequestService_FE : IRequestService_FE
         }
     }
 
-    public async void DeleteUser(Guid userGuid)
+    public async Task DeleteUser(Guid userGuid)
     {
         try
         {
-            string[] args = [userGuid.ToString()];
-            await _service.ExecuteRequestAsync<UserDto>("DeleteUser", RequestType.DELETE, null, args);
+            Dictionary<string, string> param = new()
+            {
+                { "userGuid" , userGuid.ToString() }
+            };
+
+            await _service.ExecuteRequestAsync<UserDto>("DeleteUser", RequestType.DELETE, null, param);
             _logger.LogInformation("RequestService_FE - Delete user call executed correctly");
         }
         catch (Exception ex)
@@ -70,8 +74,12 @@ public class RequestService_FE : IRequestService_FE
     {
         try
         {
-            string[] args = [userGuid.ToString()];
-            ApiResponse<UserDto> data = await _service.ExecuteRequestAsync<UserDto>("GetUserByGuid", RequestType.GET, null, args);
+            Dictionary<string, string> param = new()
+            {
+                { "userGuid" , userGuid.ToString() }
+            };
+
+            ApiResponse<UserDto> data = await _service.ExecuteRequestAsync<UserDto>("GetUserByGuid", RequestType.GET, null, param);
             _logger.LogInformation("RequestService_FE - Get user by guid call executed correctly");
             return data;
         }
@@ -127,12 +135,17 @@ public class RequestService_FE : IRequestService_FE
         }
     }
 
-    public async void DeleteBlogPost(Guid blogPostGuid)
+    public async Task DeleteBlogPost(Guid blogPostGuid)
     {
         try
         {
+            Dictionary<string, string> param = new()
+            {
+                {"blogPostGuid", blogPostGuid.ToString()} 
+            };
+
             string[] args = [blogPostGuid.ToString()];
-            await _service.ExecuteRequestAsync<BlogPostDto>("DeletePostDto", RequestType.DELETE, null, args);
+            await _service.ExecuteRequestAsync<BlogPostDto>("DeleteBlogPost", RequestType.DELETE, null, param);
             _logger.LogInformation("RequestService_FE - Delete blog post call executed correctly");
         }
         catch (Exception ex)
@@ -145,8 +158,12 @@ public class RequestService_FE : IRequestService_FE
     {
         try
         {
-            string[] args = [blogPostGuid.ToString()];
-            ApiResponse<BlogPostDto> data = await _service.ExecuteRequestAsync<BlogPostDto>("GetBlogPostByGuid", RequestType.GET, null, args);
+            Dictionary<string, string> param = new()
+            {
+                {"blogPostGuid", blogPostGuid.ToString()}
+            };
+
+            ApiResponse<BlogPostDto> data = await _service.ExecuteRequestAsync<BlogPostDto>("GetBlogPostByGuid", RequestType.GET, null, param);
             _logger.LogInformation("RequestService_FE - Get blog post by guid call executed correctly");
             return data;
         }

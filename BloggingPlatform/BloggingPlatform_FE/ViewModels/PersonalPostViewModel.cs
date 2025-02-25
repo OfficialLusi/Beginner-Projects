@@ -1,9 +1,11 @@
 ﻿using BloggingPlatform_FE.Interfaces;
 using BloggingPlatform_FE.Models;
 using BloggingPlatform_FE.Services;
+using BloggingPlatform_FE.Views;
 using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
@@ -42,8 +44,8 @@ public class PersonalPostViewModel : INotifyPropertyChanged
         ExitButton = new RelayCommand(Exit);
         SearchButton = new RelayCommand(Search);
 
-        EditButton = new RelayCommand(Edit);
-        DeleteButton = new RelayCommand(Delete);
+        EditButton = new RelayCommand<object>(Edit);
+        DeleteButton = new RelayCommand<object>(Delete);
 
         ShowMyAllPosts();
     }
@@ -63,8 +65,6 @@ public class PersonalPostViewModel : INotifyPropertyChanged
     public ICommand SeeMyPostButton { get; }
     public ICommand ExitButton { get; }
     public ICommand SearchButton { get; }
-
-    // todo to implement
     public ICommand EditButton { get; }
     public ICommand DeleteButton { get; }
 
@@ -107,7 +107,6 @@ public class PersonalPostViewModel : INotifyPropertyChanged
 
     private async Task ShowMyAllPosts()
     {
-
         int currentUserId = _memoryService.GetCurrentUser().UserId;
         BlogPosts.Clear();
         SortedBlogPosts.Clear();
@@ -129,14 +128,39 @@ public class PersonalPostViewModel : INotifyPropertyChanged
         }
     }
 
-    private async Task Edit()
+    private async Task Edit(object param)
     {
+        var navigationService = App.ServiceProvider.GetRequiredService<INavigationService>();
 
+        if (param is BlogPostDto blogPostToEdit)
+        {
+            _memoryService.SetCurrentPost(blogPostToEdit);
+            navigationService.NavigateTo("EditPost");
+        }
     }
 
-    private async Task Delete()
+    private async Task Delete(object param)
     {
+        var navigationService = App.ServiceProvider.GetRequiredService<INavigationService>();
 
+        if (param is BlogPostDto blogPostToDelete)
+        {
+            var dialog = new DeleteConfirmationDialogView(new DeleteConfirmationDialogViewModel());
+
+            // getting the result of the login signup dialog
+            bool? result = dialog.ShowDialog();
+
+
+            if (result.HasValue && result.Value)
+            {
+                // getting the navigation service from the di container
+
+                if (dialog.ChosenOption == "Yes")
+                    await _requestService.DeleteBlogPost(blogPostToDelete.PostGuid);
+            }
+
+        }
+        navigationService.NavigateTo("PersonalPosts");
     }
 
     #region INotifyPropertyChanged Members

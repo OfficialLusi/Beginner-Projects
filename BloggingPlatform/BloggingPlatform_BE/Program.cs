@@ -1,10 +1,10 @@
 using BloggingPlatform_BE.Application.Services;
 using BloggingPlatform_BE.Domain.Interfaces;
 using BloggingPlatform_BE.Infrastructure.Repository;
-using Microsoft.Extensions.Logging;
-using System.Data.Entity;
 
-internal class Program
+namespace BloggingPlatform_BE;
+
+public class Program
 {
     private static void Main(string[] args)
     {
