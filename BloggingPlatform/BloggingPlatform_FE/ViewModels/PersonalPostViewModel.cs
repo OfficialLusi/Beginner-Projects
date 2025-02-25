@@ -4,6 +4,7 @@ using BloggingPlatform_FE.Services;
 using LusiUtilsLibrary.Backend.APIs_REST;
 using LusiUtilsLibrary.Backend.Initialization;
 using LusiUtilsLibrary.Frontend.MVVMHelpers;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -81,13 +82,11 @@ public class PersonalPostViewModel : INotifyPropertyChanged
 
     private async Task Search()
     {
-        if (_searchedWord == string.Empty)
-        {
-            await ShowMyAllPosts();
+        if (string.IsNullOrEmpty(_searchedWord))
             return;
-        }
 
         BlogPosts.Clear();
+        SortedBlogPosts.Clear();
 
         int currentUserId = _memoryService.GetCurrentUser().UserId;
 
@@ -98,8 +97,12 @@ public class PersonalPostViewModel : INotifyPropertyChanged
         foreach (BlogPostDto blogPostDto in userPosts)
         {
             if (blogPostDto.PostTags.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase) || blogPostDto.PostTitle.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase))
-                BlogPosts.Add(blogPostDto);
+                SortedBlogPosts.Add(blogPostDto);
         }
+
+        SortedBlogPosts.Sort(_compareService);
+        BlogPosts = new(SortedBlogPosts);
+        OnPropertyChanged(nameof(BlogPosts));
     }
 
     private async Task ShowMyAllPosts()
@@ -107,6 +110,7 @@ public class PersonalPostViewModel : INotifyPropertyChanged
 
         int currentUserId = _memoryService.GetCurrentUser().UserId;
         BlogPosts.Clear();
+        SortedBlogPosts.Clear();
 
         ApiResponse<List<BlogPostDto>> data = await _requestService.GetAllBlogPosts();
 
@@ -115,12 +119,13 @@ public class PersonalPostViewModel : INotifyPropertyChanged
             _logger.LogInformation("PersonalPostViewModel - Correctly received list of all blog posts");
             foreach (var post in data.Data)
             {
-                if(post.UserId == currentUserId)
+                if (post.UserId == currentUserId)
                     SortedBlogPosts.Add(post);
             }
 
             SortedBlogPosts.Sort(_compareService);
             BlogPosts = new(SortedBlogPosts);
+            OnPropertyChanged(nameof(BlogPosts));
         }
     }
 

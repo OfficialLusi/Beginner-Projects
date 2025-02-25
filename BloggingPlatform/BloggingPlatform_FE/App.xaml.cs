@@ -76,7 +76,7 @@ namespace BloggingPlatform_FE
             });
 
             // page navigation service
-            services.AddTransient<INavigationService, NavigationService>(provider =>
+            services.AddSingleton<INavigationService, NavigationService>(provider =>
             {
                 return new NavigationService(provider);
             });

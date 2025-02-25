@@ -7,8 +7,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
-using System.Collections;
 using BloggingPlatform_FE.Services;
+using System.Windows.Controls;
 
 namespace BloggingPlatform_FE.ViewModels;
 
@@ -33,11 +33,11 @@ public class HomeViewModel : INotifyPropertyChanged
         _compareService = compareService;
         _logger = logger;
 
-        HomeButton = new RelayCommand(async () => await GoToHome());
-        WritePostButton = new RelayCommand(async () => await GoToWritePost());
-        SeeMyPostButton = new RelayCommand(async () => await GoToSeeMyPosts());
-        ExitButton = new RelayCommand(async () => await Exit());
-        SearchButton = new RelayCommand(async () => await Search());
+        HomeButton = new RelayCommand(GoToHome);
+        WritePostButton = new RelayCommand(GoToWritePost);
+        SeeMyPostButton = new RelayCommand(GoToSeeMyPosts);
+        ExitButton = new RelayCommand(Exit);
+        SearchButton = new RelayCommand(Search);
 
         ShowAllPosts();
     }
@@ -72,17 +72,14 @@ public class HomeViewModel : INotifyPropertyChanged
 
     private async Task Search()
     {
-        if(_searchedWord == string.Empty)
-        {
-            await ShowAllPosts();
+        if(string.IsNullOrEmpty(_searchedWord))
             return;
-        }
 
         BlogPosts.Clear();
         SortedBlogPosts.Clear();
 
         ApiResponse<List<BlogPostDto>> data = await _requestService.GetAllBlogPosts();
-        
+
         foreach (BlogPostDto blogPostDto in data.Data)
         {
             if (blogPostDto.PostTags.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase) || blogPostDto.PostTitle.Contains(_searchedWord, StringComparison.InvariantCultureIgnoreCase))
@@ -92,6 +89,7 @@ public class HomeViewModel : INotifyPropertyChanged
         // sort by the date (showing the recent ones) 
         SortedBlogPosts.Sort(_compareService);
         BlogPosts = new(SortedBlogPosts);
+        OnPropertyChanged(nameof(BlogPosts));
     }
 
     private async Task ShowAllPosts()
@@ -102,6 +100,7 @@ public class HomeViewModel : INotifyPropertyChanged
         {
             _logger.LogInformation("HomeViewModel - Correctly received list of all blog posts");
             BlogPosts.Clear();
+            SortedBlogPosts.Clear();
             foreach (var post in data.Data)
             {
                 SortedBlogPosts.Add(post);
@@ -110,6 +109,7 @@ public class HomeViewModel : INotifyPropertyChanged
             // sort by the date (showing the recent ones) 
             SortedBlogPosts.Sort(_compareService);
             BlogPosts = new(SortedBlogPosts);
+            OnPropertyChanged(nameof(BlogPosts));
         }
     }
 
