@@ -24,6 +24,7 @@ public class EditPostViewModel
     private string _postContent;
     private string _postTags;
     private string _errorText;
+    private BlogPostDto _currentPost;
 
     public EditPostViewModel(IRequestService_FE requestService, INavigationService navigationService, IMemoryService memoryService, ILogger<EditPostViewModel> logger)
     {
@@ -42,6 +43,12 @@ public class EditPostViewModel
         SeeMyPostButton = new RelayCommand(GoToSeeMyPosts);
         ExitButton = new RelayCommand(Exit);
         EditPostButton = new RelayCommand(Edit);
+
+        _currentPost = GetCurrentPost();
+
+        PostTitle = _currentPost.PostTitle;
+        PostContent = _currentPost.PostContent;
+        PostTags = _currentPost.PostTags;
     }
 
     public string PostTitle
@@ -99,15 +106,7 @@ public class EditPostViewModel
 
     private async Task Edit()
     {
-        int currentUserId = _memoryService.GetCurrentUser().UserId;
-
-        BlogPostDto postToEdit = _memoryService.GetCurrentPost();
-
         // todo continuare qua
-
-        //_postTitle = postToEdit.PostTitle;
-        //_postContent = postToEdit.PostContent;
-        //_postTags = postToEdit.PostTags;
 
         if (_postTitle == string.Empty && _postContent == string.Empty && _postTags == string.Empty)
         {
@@ -119,14 +118,24 @@ public class EditPostViewModel
 
         BlogPostDto newBlogPost = new BlogPostDto()
         {
-            // passing the new data
+            PostGuid = _currentPost.PostGuid,
+            PostTitle = _postTitle,
+            PostContent = _postContent,
+            PostTags = _postTags,
+            PostCreatedOn = _currentPost.PostCreatedOn,
+            PostModifiedOn = DateTime.UtcNow,
         };
 
-        _requestService.AddBlogPost(newBlogPost);
+        await _requestService.UpdateBlogPost(newBlogPost);
 
         _logger.LogInformation("EditPostViewModel - blog post updated succesfully, navigating to home page");
 
-        _navigationService.NavigateTo("Home");
+        _navigationService.NavigateTo("PersonalPosts");
+    }
+
+    private BlogPostDto GetCurrentPost()
+    {
+        return _memoryService.GetCurrentPost();
     }
 
     #region INotifyPropertyChanged Members

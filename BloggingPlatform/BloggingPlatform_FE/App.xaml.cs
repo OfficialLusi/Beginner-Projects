@@ -61,6 +61,7 @@ namespace BloggingPlatform_FE
             string workingDirectory = Environment.CurrentDirectory;
             string requestFileName = "\\communicationsettings.json";
             string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName + requestFileName;
+
             services.AddSingleton<IREST_RequestService, REST_RequestService>(provider =>
             {
                 ILogger<REST_RequestService> logger = provider.GetRequiredService<ILogger<REST_RequestService>>();
@@ -91,6 +92,7 @@ namespace BloggingPlatform_FE
         private static void AddViewModels(IServiceCollection services)
         {
             services.AddTransient<MainViewModel>();
+            services.AddTransient<LoginSignupDialogViewModel>();
 
             services.AddTransient(provider =>
             {
@@ -136,7 +138,16 @@ namespace BloggingPlatform_FE
                 return new WritePostViewModel(requestService, navigationService, memoryService, logger);
             });
 
-            services.AddTransient<LoginSignupDialogViewModel>();
+            services.AddTransient(provider =>
+            {
+                IRequestService_FE requestService = provider.GetRequiredService<IRequestService_FE>();
+                INavigationService navigationService = provider.GetRequiredService<INavigationService>();
+                IMemoryService memoryService = provider.GetRequiredService<IMemoryService>();
+                ILogger<EditPostViewModel> logger = provider.GetRequiredService<ILogger<EditPostViewModel>>();
+                return new EditPostViewModel(requestService, navigationService, memoryService, logger);
+            });
+
+            services.AddTransient<DeleteConfirmationDialogViewModel>();
         }
 
         private static void AddViews(IServiceCollection services)
@@ -149,6 +160,8 @@ namespace BloggingPlatform_FE
             services.AddTransient<LoginSignupDialogView>();
             services.AddTransient<PersonalPostView>();
             services.AddTransient<WritePostView>();
+            services.AddTransient<DeleteConfirmationDialogView>();
+            services.AddTransient<EditPostView>();
         }
 
     }
